@@ -1,3 +1,3 @@
-# conzel.github.io
+# yagamifyed.github.io
 
-Here I will test the webpage for the well-known philosopher L. S Güver.
+Hey! This is my personal website. You can also reach it under https://levinguever.com/.
