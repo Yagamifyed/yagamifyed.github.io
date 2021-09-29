@@ -8,7 +8,6 @@ baseurl: "/bay" # the subpath of the site
 url: "https://levinguever.com" # the base hostname & protocol for the site
 og_image: /assets/img/profile-pic.jpg
 google_analytics: "UA-121636368-3"
-remote_theme: eliottvincent/bay
 theme: bay_jekyll_theme
 
 header:
