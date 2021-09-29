@@ -5,6 +5,7 @@ source "https://rubygems.org"
 #
 #     bundle exec jekyll serve
 gem "jekyll", "~> 4.0.0"
+gem "bay_jekyll_theme"
 
 # Plugins
 group :jekyll_plugins do
