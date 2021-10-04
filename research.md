@@ -1,10 +1,9 @@
 ---
 layout: work
+title: Theses
 slug: /work
 ---
-
-
-### Theses
+### 
 
 <p align="justify"> I wrote three Master theses in fulfillment of my degree. <ul>
   <li>In the first, <b><i>Action, Intention, and Criminal Justice</i></b>, I argued in favour of an Anscombian account of action and intention as opposed to the current causalist orthodoxy construing actions as <i>willed bodily motion</i> that spans the criminal law. </li>
@@ -15,7 +14,7 @@ My Bachelor thesis concerned itself with the normative implications of modern ne
 
 
 
-### Papers
+## Papers
 
 There are some papers in the pipeline – stay tuned!
 
