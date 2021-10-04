@@ -4,8 +4,6 @@ slug: /work
 ---
 
 
-
-
 ### Theses
 
 <p align="justify"> I wrote three Master theses in fulfillment of my degree. <ul>
@@ -19,7 +17,7 @@ My Bachelor thesis concerned itself with the normative implications of modern ne
 
 ### Papers
 
-
+There are some papers in the pipeline – stay tuned!
 
  
 
