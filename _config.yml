@@ -4,7 +4,7 @@
 title: Levin Güver
 description: >- # this means to ignore newlines until "baseurl:"
   I am Levin Güver, a Philosophy Student at the UZH.
-baseurl: "/bay" # the subpath of the site
+baseurl: "" # the subpath of the site
 url: "https://levinguever.com" # the base hostname & protocol for the site
 og_image: /assets/img/profile-pic.jpg
 google_analytics: "UA-121636368-3"
