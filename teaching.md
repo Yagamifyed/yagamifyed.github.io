@@ -4,4 +4,14 @@ title: Teaching
 slug: /work
 
 ---
-Under construction.
+In the
+
+in the fall <i> 
+
+
+
+<p align="justify">
+  
+  
+  
+  </p>  
