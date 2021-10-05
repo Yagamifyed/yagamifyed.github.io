@@ -25,10 +25,10 @@ footer:
       value: levin.guever[at]rwi.uzh.ch
       link: mailto:levin.guever@rwi.uzh.ch 
   follow:
-    - name: Twitter
-      link: https://twitter.com/levinguever
     - name: Researchgate
       link: https://researchgate.net/profile/levin-guever
+    - name: Twitter
+      link: https://twitter.com/levinguever
 
 
 # Build settings
