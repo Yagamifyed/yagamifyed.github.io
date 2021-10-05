@@ -21,3 +21,6 @@ There are some papers in the pipeline – stay tuned!
 
  
 
+### Talks
+
+Please consult my CV for a comprehensive overview of my conference and workshop presentations. 
