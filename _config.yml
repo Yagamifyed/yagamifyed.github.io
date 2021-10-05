@@ -29,8 +29,7 @@ footer:
       link: https://researchgate.net/profile/levin-guever
     - name: Twitter
       link: https://twitter.com/levinguever
-    - name: LinkedIn
-      link: https://www.linkedin.com/in/levin-g%C3%BCver-091171178/
+
 
 # Build settings
 markdown: kramdown
