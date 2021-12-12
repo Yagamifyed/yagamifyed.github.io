@@ -17,7 +17,10 @@ My Bachelor thesis concerned itself with the normative implications of modern ne
 
 ### Papers
 
-<b>Güver, L. </b> & Kneer, M. (forthcoming). <i> Causation and the Silly Norm Effect</i>. In S. Magen & K. Prochownik (eds.), Advances in Experimental Philosophy of Law 
+<b>Güver, L. </b> & Kneer, M. (forthcoming). Causation and the Silly Norm Effect. In S. Magen & K. Prochownik (eds.), <i>Advances in Experimental Philosophy of Law</i>, Bloomsbury Publishing. 
+<b>Güver, L. </b> (2019). From Is to Ought: How Scientific Research in the Field of Moral Cognition Can Impact the Criminal Law. <i>Cognitio</i> 1, pp. 1–22. [student journal]
+
+For papers in progress, see CV.
 
 ### Talks
 
