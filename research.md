@@ -17,10 +17,15 @@ My Bachelor thesis concerned itself with the normative implications of modern ne
 
 ### Papers
 
-<b>Güver, L. </b> & Kneer, M. (forthcoming). Causation and the Silly Norm Effect. In S. Magen & K. Prochownik (eds.), <i>Advances in Experimental Philosophy of Law</i>, Bloomsbury Publishing. 
-<b>Güver, L. </b> (2019). From Is to Ought: How Scientific Research in the Field of Moral Cognition Can Impact the Criminal Law. <i>Cognitio</i> 1, pp. 1–22. [student journal]
+#### Peer-reviewed
+<b>Güver, L. </b> & Kneer, M. (2022). Causation and the Silly Norm Effect. In S. Magen & K. Prochownik (eds.), <i>Advances in Experimental Philosophy of Law</i>, Bloomsbury Publishing. <a href="https://philpapers.org/rec/GVECAT"> [link]</a>
+#### Other
+<b>Güver, L. </b> (2019). From Is to Ought: How Scientific Research in the Field of Moral Cognition Can Impact the Criminal Law. <i>Cognitio</i> 1, pp. 1–22. <a href="https://zenodo.org/record/3463203"> [link]</a>
 
-For papers in progress, see CV.
+#### In progress
+
+Kneer, M., Hannikainen, I.R., Almeida, G., Aguiar, F., Bystranowski, P., Dranseika, V., Janik, B. M., Garcia Olier, J., <b>Güver, L.</b>, Liefgreen, A., Tobia, K., Próchnicki, M., Rosas, A., Skoczén, I., Strohmaier, N. & Struchiner, N. (ms). Outcome effects on mental state ascriptions across cultures.
+
 
 ### Talks
 
