@@ -24,10 +24,9 @@ My Bachelor thesis concerned itself with the normative implications of modern ne
 <b>Other</b>
 <b>Güver, L. </b> (2019). From Is to Ought: How Scientific Research in the Field of Moral Cognition Can Impact the Criminal Law. <i>Cognitio</i> 1, pp. 1–22. <a href="https://zenodo.org/record/3463203"> [link]</a>
 
-<b> _In progress </b>
+<b> In progress </b>
 
 Kneer, M., Hannikainen, I.R., Almeida, G., Aguiar, F., Bystranowski, P., Dranseika, V., Janik, B. M., Garcia Olier, J., <b>Güver, L.</b>, Liefgreen, A., Tobia, K., Próchnicki, M., Rosas, A., Skoczén, I., Strohmaier, N. & Struchiner, N. (ms). Outcome effects on mental state ascriptions across cultures.
-
 
 ### Talks
 
