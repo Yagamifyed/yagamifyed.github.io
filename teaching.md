@@ -15,5 +15,5 @@ slug: /work
 
 ### Past classes
 
-<p align="justify">I have been acting as a tutor for the graduate-level lecture <b><i>Theories of Morality</i></b> (Fall 20, <a href="https://lms.uzh.ch/auth/RepositoryEntry/16827187510/CourseNode/85421310414617">materials</a>) and seminar <b><i>Thomas Nagel: The View From Nowhere</i></b> (Spring 20, <a href="https://lms.uzh.ch/auth/RepositoryEntry/16718364774/CourseNode/85421310414617">materials</a>).</p>
+<p align="justify">I have been acting as a tutor for the graduate-level lecture <b><i>Theories of Morality</i></b> (Fall 20, <a href="https://lms.uzh.ch/auth/RepositoryEntry/16827187510/CourseNode/85421310414617">materials</a>) and undergraduate seminar <b><i>Thomas Nagel: The View From Nowhere</i></b> (Spring 20, <a href="https://lms.uzh.ch/auth/RepositoryEntry/16718364774/CourseNode/85421310414617">materials</a>).</p>
 
