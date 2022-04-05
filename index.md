@@ -12,5 +12,5 @@ profile_picture:
 
 <p align="justify"> My main interests lie in legal philosophy, where I am most passionate about the philosophical foundations underlying the criminal law. I am also interested in action theory and occasionally dabble in neuroethics. In my free time I enjoy going to the gym, reading, and playing chess. </p>
 
-<p align="justify">Do not hesitate to message me if there are any questions as concerns my research and teaching, or my CV.    :-) </p>
+<p align="justify">If you share any of the above interests, please do get in touch!  :-) </p>
 
