@@ -27,7 +27,4 @@ My Bachelor thesis concerned itself with the normative implications of modern ne
 <b> In progress </b>
 
 Kneer, M., Hannikainen, I.R., Zehnder, M.-A. Almeida, G., Aguiar, F., Bystranowski, P., Dranseika, V., Janik, B. M., Garcia Olier, J., <b>Güver, L.</b>, Liefgreen, A., Tobia, K., Próchnicki, M., Rosas, A., Skoczén, I., Strohmaier, N. & Struchiner, N. (ms). The Severity Effect on Intention and Knowledge. A cross-cultural study with laypeople and legal experts. <a href="https://www.researchgate.net/publication/358248393_The_Severity_Effect_on_Intention_and_Knowledge_A_cross-cultural_study_with_laypeople_and_legal_experts"> [link]</a>
-
-### Talks
-
-Please consult my CV for a comprehensive overview of my conference and workshop presentations. 
+ 
