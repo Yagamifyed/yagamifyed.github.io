@@ -1,7 +1,7 @@
 ---
 layout: home
 profile_picture:
-  src: /assets/img/profile-pic4.jpg
+  src: /assets/img/profile-pic5.jpg
   alt: website picture
 ---
 
@@ -14,4 +14,3 @@ profile_picture:
 <p align="justify"> My main interests lie in legal philosophy, where I am most passionate about the philosophical foundations underlying the criminal law. In that regard, most of my work is in action theory, though I occasionally dabble in neuroethics. In my free time I enjoy going to the gym, reading, playing chess, and Smash Ultimate. </p>
 
 <p align="justify">If you share any of the above interests, please do get in touch!  :-) </p>
-
