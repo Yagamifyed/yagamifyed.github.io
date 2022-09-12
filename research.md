@@ -3,17 +3,6 @@ layout: work
 title: Research
 slug: /work
 ---
-### Theses
-
-<p align="justify"> I wrote three Master theses in fulfillment of my degree. <ul>
-  <li>In the first, <b><i>Action, Intention, and Criminal Justice</i></b>, I argued in favour of an Anscombian account of action and intention as opposed to the current causalist orthodoxy spanning the criminal law, which construes of actions as <i>willed bodily motion</i>, and tackled intricate Double Effect questions head-on. </li>
-  <li>The second thesis was titled <b><i>Causation and Norms</i></b>. In it, I assessed the notion of causation from the lenses of law, philosophy, and psychology, and – by means of several survey-based experiments – uncovered troubling biases in our causal cognition, with severe downstream effects for the law. It has been reworked and published as <i>Causation and the Silly Norm Effect</i> (see below).</li> 
-  <li>The third thesis, <b><i>A Vindication of Methodological Plurality in the Law</i></b>, argued that the law ought to take seriously developments in adjacent fields (<i>e.g.</i>, linguistics, philosophy, behavioural economics) and supplement the juridical toolkit with methods native to those.  </li> 
-</ul> 
-My Bachelor thesis concerned itself with the normative implications of modern neuroscientific findings for the criminal law. The full-text can be found on my Researchgate profile <a href="https://www.researchgate.net/publication/336839623_From_Is_to_Ought_How_Scientific_Research_in_the_Field_of_Moral_Cognition_Can_Impact_the_Criminal_Law"> here</a>.</p>  
-
-
-
 
 ### Papers
 
@@ -31,3 +20,15 @@ Kneer, M., Hannikainen, I.R., Zehnder, M.-A. Almeida, G., Aguiar, F., Bystranows
 A paper on conduct and result crimes and their interrelation to the linguistic property of telicity (working title: <i>Misascription of Action-Descriptions</i>, with J. Garcia Olier & M. Kneer).
 
 A paper on the role of foreseeability in ordinary causal judgement (working title: <i>Causation, Foreseeability, and Norms</i>, with M. Kneer).
+
+
+### Master theses
+
+<p align="justify"> I wrote three Master theses in fulfillment of my degree. <ul>
+  <li>In the first, <b><i>Action, Intention, and Criminal Justice</i></b>, I argued in favour of an Anscombian account of action and intention as opposed to the current causalist orthodoxy spanning the criminal law, which construes of actions as <i>willed bodily motion</i>, and tackled intricate Double Effect questions head-on. </li>
+  <li>The second thesis was titled <b><i>Causation and Norms</i></b>. In it, I assessed the notion of causation from the lenses of law, philosophy, and psychology, and – by means of several survey-based experiments – uncovered troubling biases in our causal cognition, with severe downstream effects for the law. It has been reworked and published as <i>Causation and the Silly Norm Effect</i> (see below).</li> 
+  <li>The third thesis, <b><i>A Vindication of Methodological Plurality in the Law</i></b>, argued that the law ought to take seriously developments in adjacent fields (<i>e.g.</i>, linguistics, philosophy, behavioural economics) and supplement the juridical toolkit with methods native to those.  </li> 
+</ul> 
+My Bachelor thesis concerned itself with the normative implications of modern neuroscientific findings for the criminal law. The full-text can be found on my Researchgate profile <a href="https://www.researchgate.net/publication/336839623_From_Is_to_Ought_How_Scientific_Research_in_the_Field_of_Moral_Cognition_Can_Impact_the_Criminal_Law"> here</a>.</p>  
+
+
