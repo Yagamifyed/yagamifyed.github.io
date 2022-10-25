@@ -19,7 +19,7 @@ slug: /work
  
 <li><p align="justify"><b>Güver, L. </b>, Garcia Olier, J., Kneer, M. <a href="https://levinguever.com/assets/documents/MisascriptionAD.pdf"> Misascription of Action-Descriptions</a>. (A paper on conduct and result crimes and their interrelation to the linguistic property of telicity).</p></li>
 
-<li><p align="justify"><b>Güver, L. </b> & Kneer, M. <a href="https://www.researchgate.net/publication/362360945_Causation_Foreseeability_and_Norms"> Causation, Foreseeability, and Norms</a>. (A paper on the role of foreseeability in ordinary and legal causal judgement).</p></li></ul>  
+<li><p align="justify"><b>Güver, L. </b> & Kneer, M. <a href="https://levinguever.com/assets/documents/CausationPoster2.pdf"> Causation, Foreseeability, and Norms</a>. (A paper on the role of foreseeability in ordinary and legal causal judgement).</p></li></ul>  
 
 
 
