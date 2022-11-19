@@ -6,7 +6,7 @@ slug: /work
 ---
 ### Current classes
 
-<p align="justify">I am not teaching any classes this term.</p>
+<p align="justify">I am not teaching any classes this academic year.</p>
 
 
 
