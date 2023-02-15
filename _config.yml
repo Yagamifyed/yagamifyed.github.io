@@ -25,12 +25,13 @@ footer:
       value: levin.guever[at]gmail.com
       link: mailto:levin.guever@hotmail.de
   follow:
-    - name: Researchgate
+   - name: Google Scholar
+      link: https://scholar.google.com/citations?user=gVR2rbwAAAAJ&hl=en 
+   - name: Researchgate
       link: https://researchgate.net/profile/levin-guever
-    - name: Twitter
+   - name: Twitter
       link: https://twitter.com/levinguever
-
-
+ 
 # Build settings
 markdown: kramdown
 sass:
