@@ -6,10 +6,9 @@ slug: /work
 
 ### Peer-reviewed
 
-<ul><li><p align="justify"><b>Güver, L. </b> & Kneer, M. (2023). <a href="https://philpapers.org/rec/GVECAT">Causation and the Silly Norm Effect</a>. In S. Magen & K. Prochownik (eds.), <i>Advances in Experimental Philosophy of Law</i> (to appear), Bloomsbury Publishing.</p></li></ul> 
+<ul><li><p align="justify"><b>Güver, L. </b> & Kneer, M. (2023). <a href="https://philpapers.org/rec/GVECAT">Causation and the Silly Norm Effect</a>. In S. Magen & K. Prochownik (eds.), <i>Advances in Experimental Philosophy of Law</i> (pp. 133–168), Bloomsbury Publishing.</p></li></ul> 
 
-### Other
-<ul><li><p align="justify"><b>Güver, L. </b> (2019). <a href="https://zenodo.org/record/3463203">From Is to Ought: How Scientific Research in the Field of Moral Cognition Can Impact the Criminal Law</a>. <i>Cognitio: Student Law and Society Forum</i> 1, pp. 1–22.</p></li></ul>
+<ul><li><p align="justify"><b>Güver, L. </b> (2019). <a href="https://philpapers.org/rec/GVEFIT">From Is to Ought: How Scientific Research in the Field of Moral Cognition Can Impact the Criminal Law</a>. <i>Cognitio: Student Law and Society Forum</i> 1, pp. 1–22.</p></li></ul>
 
 ### In progress
 
