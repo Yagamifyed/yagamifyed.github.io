@@ -1,6 +1,9 @@
 ---
 layout: work
 title: Research
+profile_picture:
+  src: /assets/img/profile-pic6.jpg
+  alt: research picture
 slug: /work
 ---
 
