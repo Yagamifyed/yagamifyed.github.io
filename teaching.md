@@ -6,7 +6,7 @@ slug: /work
 ---
 ### Current classes
 
-<p align="justify"> I will be teaching two courses at UCL this year. As part of the Law's Connection module, I will lead a <b><i>Case Study on</i> Fake News and Falsehoods</b> (Term 1, 2023–24, <a href="https://moodle.ucl.ac.uk/course/view.php?id=35683">materials</a>). In addition, I will tutor the <i><b>Criminal Law</b></i> module (Terms 1–2, 2023–24, <a href="https://moodle.ucl.ac.uk/course/view.php?id=37738">materials</a>).</p>
+<p align="justify"> I will be teaching two courses at UCL this year. As part of the Law's Connection module, I will lead a <b><i>Case Study on Fake News and Falsehoods</i></b> (Term 1, 2023–24, <a href="https://moodle.ucl.ac.uk/course/view.php?id=35683">materials</a>). In addition, I will tutor the <i><b>Criminal Law</b></i> module (Terms 1–2, 2023–24, <a href="https://moodle.ucl.ac.uk/course/view.php?id=37738">materials</a>).</p>
 
 
 ### Past classes
