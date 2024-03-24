@@ -8,7 +8,7 @@ slug: /work
 
 <ul><li><p align="justify"><b>Güver, L. </b> & Kneer, M. (2023). <a href="https://philpapers.org/rec/GVECFA"> Causation, Foreseeability, and Norms</a>. <i>Proceedings of the 45th Annual Meeting of the Cognitive Science Society</i> (pp. 888–895), Cognitive Science Society.</p></li></ul>
 
-<ul><li><p align="justify"><b>Güver, L. </b> & Kneer, M. (2023). <a href="https://philpapers.org/rec/GVECAT">Causation and the Silly Norm Effect</a>. In S. Magen & K. Prochownik (eds.), <i>Advances in Experimental Philosophy of Law</i> (pp. 133–168), Bloomsbury Publishing.</p></li></ul> 
+<ul><li><p align="justify"><b>Güver, L. </b> & Kneer, M. (2023). <a href="https://philpapers.org/rec/GVECAT">Causation and the Silly Norm Effect</a>. In S. Magen & K. Prochownik (eds.), <i>Advances in Experimental Philosophy of Law</i> (pp. 133–168), Bloomsbury Publishing. <font color="D21515"> Runner-up for William James Prize. </font></p>  </li></ul> 
  
 ### Other
 
