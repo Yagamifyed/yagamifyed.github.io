@@ -6,6 +6,8 @@ slug: /work
 
 ### Peer-reviewed
 
+<ul><li><p align="justify"><b>Güver, L. </b>(2024). <u>The Unity of Motive</u>. Forthcoming in <i> Argumenta</i>. <font color="D21515"> Runner-up for Young Scholar Prize and winner of Lex Academic Prize. </font></p></li></ul>
+
 <ul><li><p align="justify"><b>Güver, L. </b> & Kneer, M. (2023). <a href="https://philpapers.org/rec/GVECFA"> Causation, Foreseeability, and Norms</a>. <i>Proceedings of the 45th Annual Meeting of the Cognitive Science Society</i> (pp. 888–895), Cognitive Science Society.</p></li></ul>
 
 <ul><li><p align="justify"><b>Güver, L. </b> & Kneer, M. (2023). <a href="https://philpapers.org/rec/GVECAT">Causation and the Silly Norm Effect</a>. In S. Magen & K. Prochownik (eds.), <i>Advances in Experimental Philosophy of Law</i> (pp. 133–168), Bloomsbury Publishing. <font color="D21515"> Runner-up for William James Prize. </font></p>  </li></ul> 
