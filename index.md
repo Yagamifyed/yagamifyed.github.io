@@ -12,6 +12,6 @@ profile_picture:
 
 <p align="justify"> My interests are in criminal jurisprudence, broadly construed. I am most passionate about the action-theoretic foundations of criminal law and am composing a thesis on problems surrounding intention and adjacent concepts, such as consent. I hold auxiliary interests in the philosophy of blame and punishment and the ethics of artificial intelligence. I have also done some research in experimental jurisprudence (<a href="https://lawreview.uchicago.edu/sites/default/files/03%20Tobia.pdf">here</a> is a wonderful review article on what that looks like), principally on causal cognition.</p>
 
-<p align="justify"> In my free time I enjoy lifting weights, running, playing video games and chess, and reading manga.</p>
+<p align="justify"> In my free time I enjoy lifting weights, running, playing chess, and reading manga.</p>
 
 <p align="justify">If you share any of the above interests, please do get in touch!  :-) </p>
