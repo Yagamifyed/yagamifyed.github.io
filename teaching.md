@@ -6,7 +6,7 @@ slug: /work
 ---
 ### Current classes
 
-<p align="justify"> I will be tutoring two classes again this year: a <b>Case Study on <i>Medical Accidents</i></b> as part of the <b>Laws Connections</b> module (Term 1, 2024–25, <a href="https://moodle.ucl.ac.uk/course/section.php?id=1086793">materials</a>), and <b> Criminal Law</b> (Terms 1–2, 2024–25, <a href="https://moodle.ucl.ac.uk/course/view.php?id=44585">materials</a>).</p>
+<p align="justify"> I will be tutoring two classes this year: a <b>Case Study on <i>Medical Accidents</i></b> as part of the <b>Laws Connections</b> module (Term 1, 2024–25, <a href="https://moodle.ucl.ac.uk/course/section.php?id=1086793">materials</a>), and <b> Criminal Law</b> (Terms 1–2, 2024–25, <a href="https://moodle.ucl.ac.uk/course/view.php?id=44585">materials</a>).</p>
 
 
 ### Past classes
