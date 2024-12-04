@@ -16,6 +16,10 @@ slug: /work
  
 ### Other
 
-<ul><li><p align="justify"><b>Güver, L. </b> (2023). <a href="https://criminaljusticetheoryblog.wordpress.com/2023/08/04/motive-and-criminal-liability/">Motive and Criminal Liability</a>. <i>Criminal Justice Theory Blog</i>, online August 4th.</p></li></ul>
+
+<ul><li><p align="justify"><b>Güver, L. </b> (2024). <a href="https://criminaljusticetheoryblog.wordpress.com/2024/11/15/criminalisation-and-its-limits/">Criminalisation and Its Limits</a>. <i>Criminal Justice Theory Blog</i>, online November 15.</p></li></ul>
+
+
+<ul><li><p align="justify"><b>Güver, L. </b> (2023). <a href="https://criminaljusticetheoryblog.wordpress.com/2023/08/04/motive-and-criminal-liability/">Motive and Criminal Liability</a>. <i>Criminal Justice Theory Blog</i>, online August 4.</p></li></ul>
 
 <ul><li><p align="justify"><b>Güver, L. </b> (2019). <a href="https://philpapers.org/rec/GVEFIT">From Is to Ought: How Scientific Research in the Field of Moral Cognition Can Impact the Criminal Law</a>. <i>Cognitio: Student Law and Society Forum</i> 1, pp. 1–22.</p></li></ul>
