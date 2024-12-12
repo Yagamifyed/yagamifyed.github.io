@@ -19,7 +19,6 @@ header:
     # - name: Other
     
 footer:
-  show_powered_by: false
   contact:
     - name: Email
       value: levin.guever[at]gmail.com
