@@ -6,7 +6,9 @@ slug: /work
 
 ### Peer-reviewed
 
-<ul><li><p align="justify"><b>Güver, L. </b>(2025). <a href="https://www.researchgate.net/publication/387047374_Untangling_the_Gordian_Knot_of_Motive">Untangling the Gordian Knot of Motive</a>. Forthcoming in <i>Journal of Legal Philosophy</i>, 50(1). <font color="D21515"> Winner of ASLP Essay Prize. </font></p></li></ul>
+<ul><li><p align="justify"><b>Güver, L. </b>(2025). <a href="https://www.researchgate.net/publication/387047374_Untangling_the_Gordian_Knot_of_Motive">Untangling the Gordian Knot of Motive</a>. <i>Journal of Legal Philosophy</i>, 50(1), pp. 1–26. <font color="D21515"> Winner of ASLP Essay Prize. </font></p></li></ul>
+
+<ul><li><p align="justify"><b>Güver, L. </b> & Kneer, M. (2025). <a href="https://www.sciencedirect.com/science/article/pii/S0010027725000459"> Causation, Norms, and Cognitive Bias</a>. <i>Cognition</i>, 259, 106105.</p></li></ul>
 
 <ul><li><p align="justify"><b>Güver, L. </b>(2024). <a href="https://www.argumenta.org/article/the-unity-of-motive/"> The Unity of Motive</a>. <i>Argumenta</i>, 9(2), pp. 231–245. <font color="D21515"> Runner-up for Young Scholar Prize and winner of Lex Academic Prize. </font></p></li></ul>
 
