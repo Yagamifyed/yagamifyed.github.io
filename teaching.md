@@ -11,7 +11,7 @@ slug: /work
 
 ### Past classes
 
-<p align="justify"> Recently, I co-caught a course with my friend <a href="https://www.philosophie.phil.fau.de/person/oezbe/">Ufuk Özbe</a> on  <strong>Victor Tadros's <i>Wrongs and Crimes</i></strong> (Winter 2025) at the FAU Erlangen-Nuremberg.</p>
+<p align="justify"> Recently, I co-caught a course with my friend <a href="https://ufukozbe.com">Ufuk Özbe</a> on  <strong>Victor Tadros's <i>Wrongs and Crimes</i></strong> (Winter 2025) at the FAU Erlangen-Nuremberg.</p>
 
 <p align="justify">At UCL, I was involved in both the <b>Laws Connections</b> module, where I led the <strong>Case Study on <i> Fake News and Falsehoods</i></strong> (Term 1, 2023–24, 2024–25), and the <strong> Criminal Law</strong> module (Terms 1–2, 2023–24, 2024–25).</p>
 
