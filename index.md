@@ -13,7 +13,6 @@ profile_picture:
 }
 </style>
 
----
 
 <p align="justify"> Hey there – thanks for visiting my website! My name is Levin Güver and I am currently a postdoctoral researcher at the <span class="institution">University of Zurich</span>, where I am composing my habilitation on the philosophical foundations of criminal procedure law. I hold a PhD from <span class="institution">University College London</span>, where I was jointly supervised across the Law Faculty and Philosophy Department by <a href="https://www.ucl.ac.uk/laws/people/dr-mark-dsouza">Mark Dsouza</a> and <a href="https://www.ucl.ac.uk/philosophy/people/professor-john-hyman">John Hyman</a>, as well as a Bachelor of Law and Master of Law from the <span class="institution">University of Zurich</span>, the latter of which I graduated as valedictorian. I am also an active member of the <a href="https://idea-lab.uni-graz.at/de/unsere-forschenden/ethik-der-kuenstlichen-intelligenz/">IDea Lab</a> (formerly known as the <a href="https://www.guiltymindslab.com/">Guilty Minds Lab</a>), and have spent some time at both the <span class="institution">Max Planck Institute for Crime, Security, and Law</span> and <span class="institution">Yale Law School</span>.</p>
 
