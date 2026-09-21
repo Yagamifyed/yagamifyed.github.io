@@ -4,6 +4,14 @@ title: Research
 slug: /work
 ---
 
+<style>
+p {
+  line-height: 25px;
+}
+
+</style>
+
+
 ### Articles and Chapters
 
 <ul><li><p align="justify"><b>Güver, L. </b> & Kneer, M. (2025). <a href="https://www.sciencedirect.com/science/article/pii/S0010027725000459"> Causation, Norms, and Cognitive Bias</a>. <i>Cognition</i>, 259, 106105.</p></li></ul>

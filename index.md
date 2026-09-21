@@ -6,10 +6,13 @@ profile_picture:
 ---
 
 <style>
+p {
+  line-height: 25px;
+}
 .institution {
   font-variant: small-caps;
   font-size: 1.1em;
-  letter-spacing: 0.02em;
+  line-height: 25px;
 }
 </style>
 
