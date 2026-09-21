@@ -32,7 +32,7 @@ b, strong {
 
 ### Past classes
 
-<p align="justify"> Last semester, I returned to the <span class="institution">University of Zurich</span> as the Inaugural 'Normz' Teaching Fellow to co-teach a seminar with <a href="https://www.ius.uzh.ch/en/staff/professorships/alphabetical/summers/person.html">Sarah Summers</a> on <strong> Crime, Punishment, and Equality </strong> (Spring 2026). A flyer can be found <a href="https://www.normz.uzh.ch/en/Curricula/Lecture-series/Crime%2C-Punishment-and-Equality.html">here</a>.</p>
+<p align="justify"> Last semester, I returned to the <span class="institution">University of Zurich</span> as the Inaugural 'Normz' Teaching Fellow to co-teach a seminar with <a href="https://www.ius.uzh.ch/en/staff/professorships/alphabetical/summers/person.html">Sarah Summers</a> on <strong> Crime, Punishment, and Equality</strong> (Spring 2026). A flyer can be found <a href="https://www.normz.uzh.ch/en/Curricula/Lecture-series/Crime%2C-Punishment-and-Equality.html">here</a>.</p>
 <p align="justify"> The semester before that, I co-caught a course with my friend <a href="https://ufukozbe.com">Ufuk Özbe</a> on  <strong>Victor Tadros's <i>Wrongs and Crimes</i></strong> (Winter 2025) at the <span class="institution">University of Erlangen-Nuremberg</span>.</p>
 
 <p align="justify">At <span class="institution">University College London</span>, I was involved in both the <b>Laws Connections</b> module, where I led the <strong>Case Study on <i> Fake News and Falsehoods</i></strong> (Term 1, 2023–24, 2024–25), and the <strong> Criminal Law</strong> module (Terms 1–2, 2023–24, 2024–25).</p>
