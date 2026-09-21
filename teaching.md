@@ -14,6 +14,9 @@ p {
   font-size: 1.1em;
   line-height: 25px;
 }
+h3 {
+  font-family: Charter, Georgia, Helvetica, Arial, sans-serif;
+}
 </style>
 
 ### Current classes

@@ -9,6 +9,10 @@ p {
   line-height: 25px;
 }
 
+h3 {
+  font-family: Charter, Georgia, Helvetica, Arial, sans-serif;
+}
+
 </style>
 
 
