@@ -9,7 +9,6 @@ p {
   line-height: 25px;
 }
 
-h1.page-heading,
 h3 {
   font-family: Charter, Georgia, Helvetica, Arial, sans-serif;
 }
