@@ -18,6 +18,11 @@ h1.page-heading,
 h3 {
   font-family: Charter, Georgia, Helvetica, Arial, sans-serif;
 }
+
+b, strong {
+  font-weight: inherit;
+  text-decoration: underline;
+}
 </style>
 
 ### Current classes
