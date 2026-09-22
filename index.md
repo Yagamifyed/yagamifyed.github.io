@@ -23,4 +23,4 @@ p {
 
 <p align="justify"> In my free time I enjoy lifting weights, running, playing chess, video games, and reading manga.</p>
 
-<p align="justify">If you share any of the above interests, please do get in touch! <img src="/favicon.ico" alt="" style="height: 2em; width: 2em; vertical-align: -0.1em;"></p>
+<p align="justify">If you share any of the above interests, please do get in touch! <img src="/favicon.ico" alt="" style="height: 1em; width: 1em; vertical-align: -0.1em;"></p>
