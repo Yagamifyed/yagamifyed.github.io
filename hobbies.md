@@ -520,12 +520,16 @@ b, strong {
     function unlock() {
       gate.hidden = true;
       secret.hidden = false;
-      try { sessionStorage.setItem("hobbies-unlocked", "1"); } catch (e) {}
     }
 
-    try {
-      if (sessionStorage.getItem("hobbies-unlocked") === "1") unlock();
-    } catch (e) {}
+    // Lock again when the page is restored via the back/forward buttons.
+    window.addEventListener("pageshow", function (e) {
+      if (e.persisted) {
+        secret.hidden = true;
+        gate.hidden = false;
+        document.getElementById("gate-input").value = "";
+      }
+    });
 
     document.getElementById("gate-form").addEventListener("submit", function (e) {
       e.preventDefault();
