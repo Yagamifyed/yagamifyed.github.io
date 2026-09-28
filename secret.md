@@ -673,9 +673,9 @@ b, strong {
   <div class="bank-body">
     <img class="bank-page" data-tab="1" src="/assets/img/hobbies/bank-1.png" alt="Bank tab 1" width="460" height="659">
     <img class="bank-page" data-tab="2" src="/assets/img/hobbies/bank-2.png" alt="Bank tab 2" width="460" height="952" hidden>
-    <img class="bank-page" data-tab="3" src="/assets/img/hobbies/bank-3.png" alt="Bank tab 3: keys" width="460" height="437" loading="lazy" hidden>
-    <img class="bank-page" data-tab="4" src="/assets/img/hobbies/bank-4.png" alt="Bank tab 4: books" width="460" height="905" loading="lazy" hidden>
-    <img class="bank-page" data-tab="5" src="/assets/img/hobbies/bank-5.png" alt="Bank tab 5: the whole bank" width="460" height="6381" loading="lazy" hidden>
+    <img class="bank-page" data-tab="3" src="/assets/img/hobbies/bank-3.png?v=2" alt="Bank tab 3: keys" width="460" height="408" loading="lazy" hidden>
+    <img class="bank-page" data-tab="4" src="/assets/img/hobbies/bank-4.png?v=2" alt="Bank tab 4: books" width="460" height="875" loading="lazy" hidden>
+    <img class="bank-page" data-tab="5" src="/assets/img/hobbies/bank-5.png?v=2" alt="Bank tab 5: the whole bank" width="460" height="6347" loading="lazy" hidden>
   </div>
 </div>
 
