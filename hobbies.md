@@ -508,6 +508,8 @@ b, strong {
   </a>
 </div>
 
+<p align="justify">For a full overview, see <a href="https://myanimelist.net/profile/Yagamifyed">here</a>.</p>
+
 </div>
 
 <script>
