@@ -134,10 +134,11 @@ b, strong {
   visibility: hidden;
 }
 
+/* Equal 32px gaps between the model, the skills panel, the mining goal and the manga */
 .osrs-model {
   width: 100%;
   height: 420px;
-  margin: 20px 0;
+  margin: 0 0 24px; /* + the few px of canvas below the feet */
   overflow: hidden;
   cursor: grab;
 }
@@ -150,7 +151,7 @@ b, strong {
 /* Mining goal: progress track with ore milestones and a little miner */
 .goal {
   max-width: 384px;
-  margin: 20px auto 0;
+  margin: 32px auto 0;
 }
 .goal-label {
   display: flex;
@@ -259,7 +260,7 @@ b, strong {
 /* Skills panel styled after the in-game skill tab */
 .osrs-panel {
   max-width: 372px;
-  margin: 20px auto 6px;
+  margin: 0 auto;
   padding: 4px;
   background: #1f1f1f;
   border: 2px solid #050505;
@@ -372,7 +373,7 @@ b, strong {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
-  margin: 20px 0;
+  margin: 32px 0 20px;
 }
 @media (max-width: 600px) {
   .favs {
@@ -781,6 +782,36 @@ b, strong {
     <span class="fav-score">★ 7</span>
     <span class="fav-title">One Piece: Nami vs. Kalifa<small>One-shot · 2022</small></span>
   </a>
+  <a class="fav" href="https://myanimelist.net/manga/104271/Chi_no_Wadachi">
+    <img src="/assets/img/hobbies/manga/104271.jpg" alt="Blood on the Tracks" loading="lazy">
+    <span class="fav-score">★ 5</span>
+    <span class="fav-title">Blood on the Tracks<small>Manga · 2017</small></span>
+  </a>
+  <a class="fav" href="https://myanimelist.net/manga/98270/Fire_Punch">
+    <img src="/assets/img/hobbies/manga/98270.jpg" alt="Fire Punch" loading="lazy">
+    <span class="fav-score">★ 5</span>
+    <span class="fav-title">Fire Punch<small>Manga · 2016</small></span>
+  </a>
+  <a class="fav" href="https://myanimelist.net/manga/129370/Burn_the_Witch">
+    <img src="/assets/img/hobbies/manga/129370.jpg" alt="Burn the Witch" loading="lazy">
+    <span class="fav-score">★ 4</span>
+    <span class="fav-title">Burn the Witch<small>Manga · 2020</small></span>
+  </a>
+  <a class="fav" href="https://myanimelist.net/manga/110727/Gigant">
+    <img src="/assets/img/hobbies/manga/110727.jpg" alt="Gigant" loading="lazy">
+    <span class="fav-score">★ 3</span>
+    <span class="fav-title">Gigant<small>Manga · 2017</small></span>
+  </a>
+  <a class="fav" href="https://myanimelist.net/manga/66241/Kaze_ga_Tsuyoku_Fuiteiru">
+    <img src="/assets/img/hobbies/manga/66241.jpg" alt="Kaze ga Tsuyoku Fuiteiru" loading="lazy">
+    <span class="fav-score">★ 2</span>
+    <span class="fav-title">Kaze ga Tsuyoku Fuiteiru<small>Manga · 2007</small></span>
+  </a>
+  <a class="fav" href="https://myanimelist.net/manga/81681/Plunderer">
+    <img src="/assets/img/hobbies/manga/81681.jpg" alt="Plunderer" loading="lazy">
+    <span class="fav-score">★ 1</span>
+    <span class="fav-title">Plunderer<small>Manga · 2014</small></span>
+  </a>
 </div>
 
 </div>
@@ -893,14 +924,14 @@ b, strong {
   const container = document.getElementById("osrs-model");
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
-  camera.position.set(0, 1.0, 3.6);
+  camera.position.set(0, 1.07, 2.9);
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio(window.devicePixelRatio);
   container.appendChild(renderer.domElement);
 
   const controls = new OrbitControls(camera, renderer.domElement);
-  controls.target.set(0, 0.75, 0);
+  controls.target.set(0, 0.89, 0);
   controls.enableZoom = false;
   controls.enablePan = false;
   controls.minPolarAngle = Math.PI / 4;
@@ -922,8 +953,8 @@ b, strong {
       pivot.add(model);
     });
   }
-  place("/assets/img/hobbies/osrs-character.glb", -0.3);
-  place("/assets/img/hobbies/osrs-pet.glb", 0.6);
+  place("/assets/img/hobbies/osrs-character.glb", -0.35);
+  place("/assets/img/hobbies/osrs-pet.glb", 0.5);
 
   // The page starts hidden behind the password, so size the canvas whenever it becomes visible.
   new ResizeObserver(() => {
