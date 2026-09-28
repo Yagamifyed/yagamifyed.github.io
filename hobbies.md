@@ -172,7 +172,7 @@ b, strong {
   position: relative;
   margin: 0 18px;
   padding-top: 94px;
-  padding-bottom: 48px;
+  padding-bottom: 80px;
 }
 .goal-bar {
   height: 12px;
@@ -238,6 +238,13 @@ b, strong {
 .goal-milestone img {
   width: 26px;
   image-rendering: pixelated;
+}
+/* The rock golem pet sits close to the 25m mark, so it hangs a row lower on a longer tick */
+.goal-milestone.low {
+  top: 144px;
+}
+.goal-milestone.low::before {
+  height: 51px;
 }
 .goal-milestone.special img {
   filter: drop-shadow(0 0 4px #f5c400);
@@ -369,7 +376,7 @@ b, strong {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
-  margin: 54px 0 20px; /* the goal's milestone row leaves ~10px below its labels */
+  margin: 57px 0 20px; /* the goal's lowest milestone leaves ~7px below its label */
 }
 @media (max-width: 600px) {
   .favs {
@@ -558,6 +565,9 @@ b, strong {
     <div class="goal-bar"><div class="goal-fill" id="mining-fill" style="width: 15.7%"></div></div>
     <div class="goal-milestone cape reached" data-xp="13034431" style="left: 6.51722%" title="Mining cape – 13,034,431 XP">
       <img src="/assets/img/hobbies/ores/cape.png" alt="Mining cape"><span>13m</span>
+    </div>
+    <div class="goal-milestone low reached" data-xp="31213000" style="left: 15.6065%" title="Rock golem – received at 31,213,000 XP">
+      <img src="/assets/img/hobbies/ores/rock-golem.png" alt="Rock golem"><span>31.2m</span>
     </div>
     <div class="goal-milestone reached" data-xp="25000000" style="left: 12.5%" title="25,000,000 XP">
       <span>25m</span>
@@ -992,11 +1002,13 @@ b, strong {
   const HANDLE_REST = 41; // direction grip -> pickaxe head end in the model's pose, degrees above forward
   const LEFT_INWARD = -40 * Math.PI / 180; // bring the left arm across the body to the handle
   const LEFT_OFFSET = -28 * Math.PI / 180; // the left arm hangs lower than the right in the model's pose
+  const CAPE_TOP = new THREE.Vector3(0, 158, -16); // where the cape hangs from the shoulders
+  const isCape = (c) => c.z < -14 && c.y > 18 && c.y < 165 && Math.abs(c.x) < 34;
   const isPickaxe = (c) => c.x < -4 && c.z > 19 && c.y > 92;
   const isRightArm = (c) => c.x < -21 && c.y > 88 && c.y < 150;
   const isShield = (c) => c.x > 34 && (c.z > 16 || c.z < -16 || c.y < 115);
   const isLeftArm = (c) => c.x > 21 && c.y > 88 && c.y < 150;
-  const uppers = [], bodies = [], rightArms = [], leftArms = [], pickaxes = [];
+  const uppers = [], bodies = [], rightArms = [], leftArms = [], pickaxes = [], capes = [];
   function part(mesh, index, parent, pivotPoint, parentOrigin, list) {
     const geometry = mesh.geometry.clone();
     geometry.setIndex(index);
@@ -1016,14 +1028,15 @@ b, strong {
     meshes.forEach((mesh, i) => {
       const pos = mesh.geometry.attributes.position;
       const idx = mesh.geometry.index.array;
-      const pickIdx = [], rightIdx = [], leftIdx = [], bodyIdx = [];
+      const pickIdx = [], rightIdx = [], leftIdx = [], capeIdx = [], bodyIdx = [];
       for (let t = 0; t < idx.length; t += 3) {
         a.fromBufferAttribute(pos, idx[t]);
         b.fromBufferAttribute(pos, idx[t + 1]);
         c.fromBufferAttribute(pos, idx[t + 2]);
         const centre = a.add(b).add(c).divideScalar(3);
         if (isShield(centre)) continue;
-        const target = isPickaxe(centre) ? pickIdx : isRightArm(centre) ? rightIdx : isLeftArm(centre) ? leftIdx : bodyIdx;
+        const target = isCape(centre) ? capeIdx : isPickaxe(centre) ? pickIdx : isRightArm(centre) ? rightIdx
+          : isLeftArm(centre) ? leftIdx : bodyIdx;
         target.push(idx[t], idx[t + 1], idx[t + 2]);
       }
       // the chest frame that the arms and pickaxe hang from
@@ -1034,6 +1047,10 @@ b, strong {
       part(mesh, rightIdx, upper, RIGHT_SHOULDER, BEND_PIVOT, rightArms);
       part(mesh, leftIdx, upper, LEFT_SHOULDER, BEND_PIVOT, leftArms);
       part(mesh, pickIdx, upper, GRIP, BEND_PIVOT, pickaxes);
+      part(mesh, capeIdx, upper, CAPE_TOP, BEND_PIVOT, capes);
+      const cape = capes[capes.length - 1].children[0];
+      cape.frustumCulled = false;
+      cape.userData.rest = Float32Array.from(cape.geometry.attributes.position.array);
       mesh.geometry = mesh.geometry.clone();
       mesh.geometry.setIndex(bodyIdx);
       mesh.frustumCulled = false;
@@ -1052,7 +1069,7 @@ b, strong {
     const center = box.getCenter(new THREE.Vector3());
     body.position.set(-center.x, -box.min.y, -center.z);
     const facing = new THREE.Group();
-    facing.rotation.y = Math.PI / 2; // face right, towards the next milestone
+    facing.rotation.y = Math.PI / 2 + 0.45; // face right (towards the next milestone), turned a little away so the cape shows
     facing.add(body);
     minerPivot.add(facing);
   });
@@ -1075,6 +1092,33 @@ b, strong {
       }
       mesh.geometry.attributes.position.needsUpdate = true;
     }
+  }
+
+  // The Mining cape hangs from the shoulders and is simulated as a damped spring: it tries to hang straight
+  // down (so it swings back relative to the body as he bends over), lags behind fast moves and billows out.
+  // angle > 0 lifts the cape backwards, about its top edge; lower parts of the cape swing further.
+  const cape = { angle: 0, vel: 0, lastBend: 0 };
+  function deformCapes(angle, billow) {
+    for (const pivot of capes) {
+      const mesh = pivot.children[0];
+      const rest = mesh.userData.rest, arr = mesh.geometry.attributes.position.array;
+      for (let v = 0; v < arr.length; v += 3) {
+        const cy = rest[v + 1] - CAPE_TOP.y, cz = rest[v + 2] - CAPE_TOP.z;
+        const w = Math.pow(Math.min(1, Math.max(0, -cy / 140)), 1.2);
+        const a = angle * w, cos = Math.cos(a), sin = Math.sin(a);
+        arr[v + 1] = CAPE_TOP.y + cy * cos - cz * sin;
+        arr[v + 2] = CAPE_TOP.z + cy * sin + cz * cos - billow * w * w;
+      }
+      mesh.geometry.attributes.position.needsUpdate = true;
+    }
+  }
+  function stepCape(bend, dt) {
+    const bendVel = (bend - cape.lastBend) / dt;
+    cape.lastBend = bend;
+    const target = -0.6 * bend; // partly hang with gravity rather than follow the torso, draping over the back
+    cape.vel += ((target - cape.angle) * 160 - cape.vel * 11 + bendVel * 3) * dt; // spring, damping, drag from the body
+    cape.angle += cape.vel * dt;
+    deformCapes(cape.angle, Math.min(14, Math.abs(bendVel) * 4));
   }
 
   // Keyframes measured from the OSRS wiki's mining animation (File:Mining.gif), times in ms of an 800 ms cycle.
@@ -1132,8 +1176,10 @@ b, strong {
   const DEG = Math.PI / 180;
   const handOffset = GRIP.clone().sub(RIGHT_SHOULDER);
   const grip = new THREE.Vector3();
-  let lastMs = 0;
+  let lastMs = 0, lastT = 0;
   minerRenderer.setAnimationLoop((t) => {
+    const dt = Math.min(0.05, Math.max(0.001, (t - lastT) / 1000));
+    lastT = t;
     const ms = still ? 600 : ((t % SWING_MS) / SWING_MS) * CYCLE;
     const { hand, handle, bend } = pose(ms);
     // hand/handle are measured against the ground; the arms ride on the bent chest, so add the bend back
@@ -1145,6 +1191,7 @@ b, strong {
       upper.position.copy(BEND_PIVOT).add(hipOffset);
       upper.rotation.x = bend * DEG;
     }
+    stepCape(bend * DEG, dt);
     for (const pivot of rightArms) pivot.rotation.x = arm;
     for (const pivot of leftArms) pivot.rotation.set(arm + LEFT_OFFSET, 0, LEFT_INWARD);
     for (const pivot of pickaxes) {
