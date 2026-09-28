@@ -553,7 +553,7 @@ b, strong {
 </div>
 <div class="goal">
   <div class="goal-label">
-    <span class="goal-name"><img src="/assets/img/hobbies/skills/mining.png?v=2" alt="">Mining</span>
+    <span class="goal-name"><img src="/assets/img/hobbies/skills/mining.png?v=2" alt="Mining"></span>
     <span><span id="mining-xp">31,395,445</span> / 200,000,000 XP (<span id="mining-pct">15.7</span>%)</span>
   </div>
   <div class="goal-track">
