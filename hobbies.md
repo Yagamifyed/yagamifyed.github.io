@@ -487,7 +487,7 @@ b, strong {
       <span class="osrs-lvl osrs-lvl-top">97</span><span class="osrs-slash"></span><span class="osrs-lvl osrs-lvl-bot">97</span>
     </div>
     <div class="osrs-cell" data-skill="thieving" title="Thieving">
-      <img src="/assets/img/hobbies/skills/thieving.png" alt="Thieving">
+      <img src="/assets/img/hobbies/skills/thieving.png?v=2" alt="Thieving">
       <span class="osrs-lvl osrs-lvl-top">82</span><span class="osrs-slash"></span><span class="osrs-lvl osrs-lvl-bot">82</span>
     </div>
     <div class="osrs-cell" data-skill="cooking" title="Cooking">
