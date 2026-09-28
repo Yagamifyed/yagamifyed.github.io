@@ -910,7 +910,7 @@ b, strong {
   });
 
   // Little miner on the goal bar: the same character, rendered at low resolution for a pixel-art look.
-  // The model is a single static mesh, so the pickaxe arm is cut out by position and swung about the shoulder.
+  // The model is a single static mesh, so both arms are cut out by position and swung about the shoulders.
   const miner = document.getElementById("goal-miner");
   const minerRenderer = new THREE.WebGLRenderer({ canvas: document.getElementById("miner-canvas"), antialias: false, alpha: true });
   minerRenderer.setPixelRatio(1);
@@ -922,9 +922,27 @@ b, strong {
   const minerPivot = new THREE.Group(); // pivot at the feet so the body leans into each strike
   minerPivot.position.x = -0.1;
   minerScene.add(minerPivot);
-  const armPivots = [];
-  const SHOULDER = new THREE.Vector3(-30, 140, 0); // model units (right shoulder)
-  const isArm = (c) => (c.x < -21 && c.y > 88 && c.y < 150) || (c.x < -4 && c.z > 22 && c.y > 92);
+  const armPivots = []; // [pivot, isLeft]
+  // Regions in model units: the right arm holds the pickaxe; the left arm is brought over to grip it too;
+  // the shield on the left side is dropped.
+  const RIGHT_SHOULDER = new THREE.Vector3(-30, 140, 0);
+  const LEFT_SHOULDER = new THREE.Vector3(30, 140, 0);
+  const LEFT_RAISE = -85 * Math.PI / 180; // lift the left arm forward to the handle
+  const LEFT_INWARD = -40 * Math.PI / 180; // and across the body
+  const isRightArm = (c) => (c.x < -21 && c.y > 88 && c.y < 150) || (c.x < -4 && c.z > 22 && c.y > 92);
+  const isShield = (c) => c.x > 34 && (c.z > 16 || c.z < -16 || c.y < 115);
+  const isLeftArm = (c) => c.x > 21 && c.y > 88 && c.y < 150;
+  function limb(mesh, index, shoulder) {
+    const geometry = mesh.geometry.clone();
+    geometry.setIndex(index);
+    const part = new THREE.Mesh(geometry, mesh.material);
+    part.position.copy(shoulder).negate();
+    const pivot = new THREE.Group();
+    pivot.position.copy(shoulder);
+    pivot.add(part);
+    mesh.add(pivot);
+    return pivot;
+  }
   loader.load("/assets/img/hobbies/osrs-character.glb", (gltf) => {
     const body = gltf.scene;
     const meshes = [];
@@ -933,25 +951,20 @@ b, strong {
     for (const mesh of meshes) {
       const pos = mesh.geometry.attributes.position;
       const idx = mesh.geometry.index.array;
-      const armIdx = [], bodyIdx = [];
+      const rightIdx = [], leftIdx = [], bodyIdx = [];
       for (let t = 0; t < idx.length; t += 3) {
         a.fromBufferAttribute(pos, idx[t]);
         b.fromBufferAttribute(pos, idx[t + 1]);
         c.fromBufferAttribute(pos, idx[t + 2]);
-        const target = isArm(a.add(b).add(c).divideScalar(3)) ? armIdx : bodyIdx;
+        const centre = a.add(b).add(c).divideScalar(3);
+        if (isShield(centre)) continue;
+        const target = isRightArm(centre) ? rightIdx : isLeftArm(centre) ? leftIdx : bodyIdx;
         target.push(idx[t], idx[t + 1], idx[t + 2]);
       }
-      const armGeometry = mesh.geometry.clone();
-      armGeometry.setIndex(armIdx);
+      armPivots.push([limb(mesh, rightIdx, RIGHT_SHOULDER), false]);
+      armPivots.push([limb(mesh, leftIdx, LEFT_SHOULDER), true]);
       mesh.geometry = mesh.geometry.clone();
       mesh.geometry.setIndex(bodyIdx);
-      const arm = new THREE.Mesh(armGeometry, mesh.material);
-      arm.position.copy(SHOULDER).negate();
-      const pivot = new THREE.Group();
-      pivot.position.copy(SHOULDER);
-      pivot.add(arm);
-      mesh.add(pivot);
-      armPivots.push(pivot);
     }
     const box = new THREE.Box3().setFromObject(body);
     const center = box.getCenter(new THREE.Vector3());
@@ -991,7 +1004,11 @@ b, strong {
   minerRenderer.setAnimationLoop((t) => {
     const p = still ? 0 : (t % SWING_MS) / SWING_MS;
     const angle = swingAngle(p);
-    for (const pivot of armPivots) pivot.rotation.x = angle * Math.PI / 180;
+    const swing = angle * Math.PI / 180;
+    for (const [pivot, isLeft] of armPivots) {
+      if (isLeft) pivot.rotation.set(swing + LEFT_RAISE, 0, LEFT_INWARD);
+      else pivot.rotation.x = swing;
+    }
     minerPivot.rotation.z = -(angle / 65) * 0.06;
     if (lastPhase < STRIKE && p >= STRIKE) chips();
     lastPhase = p;
