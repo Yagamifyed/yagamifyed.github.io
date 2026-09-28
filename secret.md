@@ -342,7 +342,8 @@ b, strong {
 }
 .bank-page {
   display: block;
-  width: 100%;
+  width: auto; /* native size, so no screenshot is ever stretched by a pixel */
+  max-width: 100%;
   height: auto;
   image-rendering: pixelated; /* keep the sprites crisp when the screen scales them up */
 }
@@ -675,7 +676,7 @@ b, strong {
     <img class="bank-page" data-tab="2" src="/assets/img/hobbies/bank-2.png" alt="Bank tab 2" width="460" height="952" hidden>
     <img class="bank-page" data-tab="3" src="/assets/img/hobbies/bank-3.png?v=2" alt="Bank tab 3: keys" width="460" height="408" loading="lazy" hidden>
     <img class="bank-page" data-tab="4" src="/assets/img/hobbies/bank-4.png?v=2" alt="Bank tab 4: books" width="460" height="875" loading="lazy" hidden>
-    <img class="bank-page" data-tab="5" src="/assets/img/hobbies/bank-5.png?v=2" alt="Bank tab 5: the whole bank" width="460" height="6347" loading="lazy" hidden>
+    <img class="bank-page" data-tab="5" src="/assets/img/hobbies/bank-5.png?v=3" alt="Bank tab 5: the whole bank" width="459" height="6348" loading="lazy" hidden>
   </div>
 </div>
 
