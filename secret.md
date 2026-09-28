@@ -134,11 +134,11 @@ b, strong {
   visibility: hidden;
 }
 
-/* Equal 80px gaps between the model, the skills panel, the mining goal and the manga */
+/* Equal 90px gaps between the model, the skills panel, the mining goal and the manga */
 .osrs-model {
   width: 100%;
   height: 420px;
-  margin: 0 0 6px; /* the canvas has ~74px of empty space below the feet */
+  margin: 0 0 16px; /* the canvas has ~74px of empty space below the feet */
   overflow: hidden;
   cursor: grab;
 }
@@ -151,7 +151,7 @@ b, strong {
 /* Mining goal: progress track with ore milestones and a little miner */
 .goal {
   max-width: 384px;
-  margin: 80px auto 0;
+  margin: 90px auto 0;
 }
 .goal-label {
   display: flex;
@@ -325,7 +325,7 @@ b, strong {
 @media (max-width: 500px) {
   .osrs-model {
     height: 320px;
-    margin-bottom: 24px; /* ~56px of empty canvas below the feet at this height */
+    margin-bottom: 34px; /* ~56px of empty canvas below the feet at this height */
   }
   .osrs-cell {
     height: 62px;
@@ -376,7 +376,7 @@ b, strong {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
-  margin: 73px 0 20px; /* the goal's lowest milestone leaves ~7px below its label */
+  margin: 83px 0 20px; /* the goal's lowest milestone leaves ~7px below its label */
 }
 @media (max-width: 600px) {
   .favs {
@@ -1003,7 +1003,8 @@ b, strong {
   const LEFT_INWARD = -40 * Math.PI / 180; // bring the left arm across the body to the handle
   const LEFT_OFFSET = -28 * Math.PI / 180; // the left arm hangs lower than the right in the model's pose
   const CAPE_TOP = new THREE.Vector3(0, 158, -16); // where the cape hangs from the shoulders
-  const isCape = (c) => c.z < -14 && c.y > 18 && c.y < 165 && Math.abs(c.x) < 34;
+  // cape: triangles entirely behind the body, excluding the shoulder guards
+  const isCape = (c, zMax) => zMax < -10 && c.y > 18 && c.y < 165 && Math.abs(c.x) < 34 && !(Math.abs(c.x) > 20 && c.y > 125);
   const isPickaxe = (c) => c.x < -4 && c.z > 19 && c.y > 92;
   const isRightArm = (c) => c.x < -21 && c.y > 88 && c.y < 150;
   const isShield = (c) => c.x > 34 && (c.z > 16 || c.z < -16 || c.y < 115);
@@ -1033,9 +1034,10 @@ b, strong {
         a.fromBufferAttribute(pos, idx[t]);
         b.fromBufferAttribute(pos, idx[t + 1]);
         c.fromBufferAttribute(pos, idx[t + 2]);
+        const zMax = Math.max(a.z, b.z, c.z);
         const centre = a.add(b).add(c).divideScalar(3);
         if (isShield(centre)) continue;
-        const target = isCape(centre) ? capeIdx : isPickaxe(centre) ? pickIdx : isRightArm(centre) ? rightIdx
+        const target = isCape(centre, zMax) ? capeIdx : isPickaxe(centre) ? pickIdx : isRightArm(centre) ? rightIdx
           : isLeftArm(centre) ? leftIdx : bodyIdx;
         target.push(idx[t], idx[t + 1], idx[t + 2]);
       }
@@ -1094,31 +1096,48 @@ b, strong {
     }
   }
 
-  // The Mining cape hangs from the shoulders and is simulated as a damped spring: it tries to hang straight
-  // down (so it swings back relative to the body as he bends over), lags behind fast moves and billows out.
-  // angle > 0 lifts the cape backwards, about its top edge; lower parts of the cape swing further.
+  // The Mining cape hangs from the shoulders and is simulated as a damped spring. It hangs with gravity
+  // but cannot pass the back of the rear leg: it swings out behind him, falls back and comes to rest against
+  // the leg. angle > 0 lifts the cape backwards about its top edge (relative to the torso).
   const cape = { angle: 0, vel: 0, lastBend: 0 };
+  const LEG_BACK_Z = -13, LEG_CONTACT_Y = 45; // back of the rear leg, at about knee height
   function deformCapes(angle, billow) {
     for (const pivot of capes) {
       const mesh = pivot.children[0];
       const rest = mesh.userData.rest, arr = mesh.geometry.attributes.position.array;
       for (let v = 0; v < arr.length; v += 3) {
         const cy = rest[v + 1] - CAPE_TOP.y, cz = rest[v + 2] - CAPE_TOP.z;
-        const w = Math.pow(Math.min(1, Math.max(0, -cy / 140)), 1.2);
-        const a = angle * w, cos = Math.cos(a), sin = Math.sin(a);
+        const d = Math.min(1, Math.max(0, -cy / 140)); // 0 at the shoulders, 1 at the hem
+        const a = angle * Math.min(1, d * 4); // rigid below the shoulders so the leg stop is exact
+        const cos = Math.cos(a), sin = Math.sin(a);
         arr[v + 1] = CAPE_TOP.y + cy * cos - cz * sin;
-        arr[v + 2] = CAPE_TOP.z + cy * sin + cz * cos - billow * w * w;
+        arr[v + 2] = CAPE_TOP.z + cy * sin + cz * cos - billow * d * d; // the hem billows out behind
       }
       mesh.geometry.attributes.position.needsUpdate = true;
     }
   }
+  // Smallest cape angle (relative to the torso) that keeps it behind the rear leg, given the body's pose.
+  function capeLimit(bend) {
+    const c = Math.cos(bend), s = Math.sin(bend);
+    const ry = CAPE_TOP.y - BEND_PIVOT.y, rz = CAPE_TOP.z - BEND_PIVOT.z;
+    const topY = BEND_PIVOT.y + hipOffset.y + ry * c - rz * s;
+    const topZ = BEND_PIVOT.z + hipOffset.z + ry * s + rz * c;
+    const legZ = LEG_BACK_Z + hipOffset.z * (LEG_CONTACT_Y / BEND_PIVOT.y) - 3; // a little clearance
+    const worldTilt = Math.atan2(topZ - legZ, topY - LEG_CONTACT_Y); // backward tilt that just touches the leg
+    return worldTilt - bend;
+  }
   function stepCape(bend, dt) {
     const bendVel = (bend - cape.lastBend) / dt;
     cape.lastBend = bend;
-    const target = -0.6 * bend; // partly hang with gravity rather than follow the torso, draping over the back
-    cape.vel += ((target - cape.angle) * 160 - cape.vel * 11 + bendVel * 3) * dt; // spring, damping, drag from the body
+    const limit = capeLimit(bend);
+    const target = Math.max(-bend, limit); // hang straight down, unless the leg is in the way
+    cape.vel += ((target - cape.angle) * 160 - cape.vel * 13 + bendVel * 3) * dt; // spring, damping, drag from the body
     cape.angle += cape.vel * dt;
-    deformCapes(cape.angle, Math.min(14, Math.abs(bendVel) * 4));
+    if (cape.angle < limit) { // stopped by the leg: settle against it with a soft bounce
+      cape.angle = limit;
+      if (cape.vel < 0) cape.vel *= -0.2;
+    }
+    deformCapes(cape.angle, Math.min(14, Math.max(0, bendVel) * 4));
   }
 
   // Keyframes measured from the OSRS wiki's mining animation (File:Mining.gif), times in ms of an 800 ms cycle.
@@ -1129,10 +1148,10 @@ b, strong {
     { t: 0, hand: -66, handle: -49, bend: 40, stop: true }, // strike: pickaxe bites the rock
     { t: 110, hand: -70, handle: -54, bend: 44 }, // follow-through into the rock
     { t: 170, hand: -67, handle: -7, bend: 14 }, // pulled out, handle level
-    { t: 230, hand: -25, handle: 118, bend: 5 }, // pickaxe flips up
-    { t: 290, hand: 2, handle: 131, bend: 1 }, // hands rise in front
-    { t: 340, hand: 45, handle: 137, bend: -2 },
-    { t: 420, hand: 75, handle: 165, bend: -4 },
+    { t: 250, hand: -30, handle: 92, bend: 5 }, // pickaxe swings up (the GIF flips it in one frame; spread out here)
+    { t: 310, hand: 2, handle: 126, bend: 1 }, // hands rise in front
+    { t: 355, hand: 45, handle: 140, bend: -2 },
+    { t: 425, hand: 75, handle: 165, bend: -4 },
     { t: 470, hand: 86, handle: 174, bend: -5 }, // wound up: arms straight up, pickaxe level behind
     { t: 710, hand: 92, handle: 184, bend: -7, stop: true }, // still drawing back, then...
     { t: 770, hand: -21, handle: 87, bend: 10 }, // arms thrown forward, handle upright
