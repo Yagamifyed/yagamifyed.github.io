@@ -515,7 +515,7 @@ b, strong {
 <script>
   (function () {
     // SHA-256 of the password. To change it, run: printf 'newpassword' | shasum -a 256
-    var HASH = "3338a5fdfc10e11cebdef7ffa6662e03257106eb43345c4436898c2370a92dc8";
+    var HASH = "0a0ae01ec0101c38fe09f935d147b8c72b86ec807b93645bc3870444e693cac0";
     var gate = document.getElementById("gate");
     var secret = document.getElementById("secret");
 
