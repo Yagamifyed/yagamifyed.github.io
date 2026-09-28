@@ -404,14 +404,14 @@ b, strong {
     text-shadow: 1px 1px 0 #000;
   }
   .osrs-lvl-top {
-    left: 44%;
+    left: 48%;
     width: 22%;
-    top: 7px;
+    top: 10px;
   }
   .osrs-lvl-bot {
-    left: 74%;
+    left: 70%;
     width: 22%;
-    bottom: 7px;
+    bottom: 10px;
   }
   .osrs-slash {
     left: 70%;
