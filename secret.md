@@ -666,10 +666,16 @@ b, strong {
   <div class="bank-tabs" role="tablist">
     <button class="bank-tab active" role="tab" aria-selected="true" data-tab="1">1</button>
     <button class="bank-tab" role="tab" aria-selected="false" data-tab="2">2</button>
+    <button class="bank-tab" role="tab" aria-selected="false" data-tab="3">3</button>
+    <button class="bank-tab" role="tab" aria-selected="false" data-tab="4">4</button>
+    <button class="bank-tab" role="tab" aria-selected="false" data-tab="5">5</button>
   </div>
   <div class="bank-body">
     <img class="bank-page" data-tab="1" src="/assets/img/hobbies/bank-1.png" alt="Bank tab 1" width="460" height="659">
     <img class="bank-page" data-tab="2" src="/assets/img/hobbies/bank-2.png" alt="Bank tab 2" width="460" height="952" hidden>
+    <img class="bank-page" data-tab="3" src="/assets/img/hobbies/bank-3.png" alt="Bank tab 3: keys" width="460" height="437" loading="lazy" hidden>
+    <img class="bank-page" data-tab="4" src="/assets/img/hobbies/bank-4.png" alt="Bank tab 4: books" width="460" height="905" loading="lazy" hidden>
+    <img class="bank-page" data-tab="5" src="/assets/img/hobbies/bank-5.png" alt="Bank tab 5: the whole bank" width="460" height="6381" loading="lazy" hidden>
   </div>
 </div>
 
