@@ -46,7 +46,13 @@ b, strong {
   width: 100%;
   height: 420px;
   margin: 20px 0;
+  overflow: hidden;
   cursor: grab;
+}
+.osrs-model canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .goal {
@@ -137,6 +143,40 @@ b, strong {
   height: 70px;
   background: #000;
   transform: rotate(40deg);
+}
+@media (max-width: 500px) {
+  .osrs-model {
+    height: 320px;
+  }
+  .osrs-cell {
+    height: 62px;
+  }
+  .osrs-cell img {
+    left: 3px;
+    max-width: 40%;
+    max-height: 40px;
+  }
+  .osrs-lvl {
+    font-size: 24px;
+    text-shadow: 1px 1px 0 #000;
+  }
+  .osrs-lvl-top {
+    left: 46%;
+    top: 7px;
+  }
+  .osrs-lvl-bot {
+    right: 6px;
+    bottom: 7px;
+  }
+  .osrs-slash {
+    left: 70%;
+    top: -6px;
+    height: 74px;
+    transform: rotate(35deg);
+  }
+  .osrs-total {
+    font-size: 30px;
+  }
 }
 .osrs-total {
   margin-top: 4px;
@@ -635,7 +675,7 @@ b, strong {
   new ResizeObserver(() => {
     const w = container.clientWidth, h = container.clientHeight;
     if (!w || !h) return;
-    renderer.setSize(w, h);
+    renderer.setSize(w, h, false); // CSS controls the displayed size
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
   }).observe(container);
