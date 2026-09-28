@@ -68,6 +68,7 @@ b, strong {
   width: 100%;
   padding: 0;
   font: inherit;
+  font-size: 16px; /* below 16px, iOS Safari zooms in on focus and stays zoomed */
   color: transparent;
   caret-color: transparent;
   background: transparent;
@@ -181,15 +182,15 @@ b, strong {
 }
 .goal-miner {
   position: absolute;
-  top: 0;
+  top: -12px;
   width: 80px;
-  height: 92px;
+  height: 104px;
   transform: translateX(-50%);
   pointer-events: none;
 }
 .goal-miner canvas {
   width: 80px;
-  height: 92px;
+  height: 104px;
   image-rendering: pixelated;
 }
 .goal-chip {
@@ -763,6 +764,7 @@ b, strong {
     var secret = document.getElementById("secret");
 
     function unlock() {
+      document.getElementById("gate-input").blur();
       gate.hidden = true;
       secret.hidden = false;
     }
@@ -914,11 +916,11 @@ b, strong {
   const miner = document.getElementById("goal-miner");
   const minerRenderer = new THREE.WebGLRenderer({ canvas: document.getElementById("miner-canvas"), antialias: false, alpha: true });
   minerRenderer.setPixelRatio(1);
-  minerRenderer.setSize(40, 46, false); // drawn at 2x via CSS
+  minerRenderer.setSize(40, 52, false); // drawn at 2x via CSS
   const minerScene = new THREE.Scene();
-  const minerCamera = new THREE.PerspectiveCamera(30, 40 / 46, 0.1, 50);
-  minerCamera.position.set(0, 0.85, 4.2);
-  minerCamera.lookAt(0, 0.8, 0);
+  const minerCamera = new THREE.PerspectiveCamera(30, 40 / 52, 0.1, 50);
+  minerCamera.position.set(0, 0.98, 4.6);
+  minerCamera.lookAt(0, 0.98, 0);
   const minerPivot = new THREE.Group(); // pivot at the feet so the body leans into each strike
   minerPivot.position.x = -0.1;
   minerScene.add(minerPivot);
@@ -966,6 +968,13 @@ b, strong {
       mesh.geometry = mesh.geometry.clone();
       mesh.geometry.setIndex(bodyIdx);
     }
+    // Headless head: the model's neck stump is too small to survive pixelation, so draw a bolder one.
+    const stump = new THREE.Mesh(new THREE.CylinderGeometry(11, 12, 10, 8), new THREE.MeshBasicMaterial({ color: 0xa3201a }));
+    stump.position.set(0, 167, 3);
+    const wound = new THREE.Mesh(new THREE.CylinderGeometry(8, 8, 2, 8), new THREE.MeshBasicMaterial({ color: 0xf0782a }));
+    wound.position.y = 5.5;
+    stump.add(wound);
+    meshes[0].add(stump);
     const box = new THREE.Box3().setFromObject(body);
     const center = box.getCenter(new THREE.Vector3());
     body.position.set(-center.x, -box.min.y, -center.z);
@@ -975,23 +984,24 @@ b, strong {
     minerPivot.add(facing);
   });
 
-  // Swing cycle in degrees of shoulder rotation, eased so the motion never snaps:
-  // a slow wind-up, an accelerating strike, then an unhurried return.
-  const SWING_MS = 1400;
+  // Swing cycle in degrees of shoulder rotation (0 = the model's own pose, pickaxe forward at head height):
+  // haul the pickaxe right back over the head, drive it down into the rock in front, rest a beat, repeat.
+  const SWING_MS = 1600;
+  const WIND_UP = -130, IMPACT = 58;
   const easeInOut = (x) => 0.5 - 0.5 * Math.cos(Math.PI * x);
-  const easeIn = (x) => x * x;
-  const STRIKE = 0.62; // phase at which the pickaxe hits
+  const easeIn = (x) => x * x * x;
+  const STRIKE_START = 0.58, STRIKE = 0.72; // phases where the downswing begins and the pickaxe hits
   function swingAngle(p) {
-    if (p < 0.45) return -35 * easeInOut(p / 0.45);
-    if (p < STRIKE) return -35 + 100 * easeIn((p - 0.45) / (STRIKE - 0.45));
-    return 65 * (1 - easeInOut((p - STRIKE) / (1 - STRIKE)));
+    if (p < STRIKE_START) return IMPACT + (WIND_UP - IMPACT) * easeInOut(p / STRIKE_START);
+    if (p < STRIKE) return WIND_UP + (IMPACT - WIND_UP) * easeIn((p - STRIKE_START) / (STRIKE - STRIKE_START));
+    return IMPACT + 6 * Math.sin(Math.PI * (p - STRIKE) / (1 - STRIKE)) * (1 - (p - STRIKE) / (1 - STRIKE)); // small recoil
   }
   function chips() {
     for (let i = 0; i < 3; i++) {
       const chip = document.createElement("span");
       chip.className = "goal-chip";
       chip.style.left = "70px";
-      chip.style.top = "74px";
+      chip.style.top = "90px";
       chip.style.setProperty("--dx", 2 + Math.random() * 12 + "px");
       chip.style.setProperty("--dy", -6 - Math.random() * 14 + "px");
       miner.appendChild(chip);
@@ -1009,7 +1019,9 @@ b, strong {
       if (isLeft) pivot.rotation.set(swing + LEFT_RAISE, 0, LEFT_INWARD);
       else pivot.rotation.x = swing;
     }
-    minerPivot.rotation.z = -(angle / 65) * 0.06;
+    // lean back while winding up, forward into the strike
+    const lean = -0.07 + 0.19 * (angle - WIND_UP) / (IMPACT - WIND_UP);
+    minerPivot.rotation.z = -lean;
     if (lastPhase < STRIKE && p >= STRIKE) chips();
     lastPhase = p;
     minerRenderer.render(minerScene, minerCamera);
