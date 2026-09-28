@@ -55,39 +55,100 @@ b, strong {
 .scroll::after {
   right: -10px;
 }
-.scroll input {
+/* The real input is invisible; .scroll-mask draws a dot per character with its own underline */
+.scroll-field {
+  position: relative;
   width: 180px;
   max-width: 50vw;
-  padding: 4px 6px;
+  height: 32px;
+}
+.scroll-field input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  padding: 0;
   font: inherit;
-  font-size: 1.1em;
-  text-align: center;
-  color: #3b2a14;
+  color: transparent;
+  caret-color: transparent;
   background: transparent;
   border: none;
-  border-bottom: 1px dashed #8a6331;
   outline: none;
 }
+.scroll-mask {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  overflow: hidden;
+  pointer-events: none;
+  color: #3b2a14;
+  font-size: 1.1em;
+}
+.scroll-mask span {
+  width: 11px;
+  line-height: 1.2;
+  text-align: center;
+  border-bottom: 2px solid #8a6331;
+}
+.scroll-mask .caret {
+  width: 2px;
+  height: 20px;
+  border: none;
+  background: #3b2a14;
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}
 
-/* The casket is the submit button */
+/* The casket is the submit button: its lid hinges open when clicked */
 .casket {
+  position: relative;
+  width: 72px;
+  height: 64px;
   padding: 0;
   border: none;
   background: none;
   cursor: pointer;
 }
 .casket img {
-  display: block;
+  position: absolute;
+  inset: 0;
   width: 72px;
   image-rendering: pixelated;
-  transition: transform 0.15s;
 }
-.casket:hover img,
-.casket:focus-visible img {
-  transform: translateY(-3px) scale(1.05);
+.casket-lid {
+  transform-origin: 85% 20%;
+  transition: transform 0.25s ease-out;
 }
-.casket.shake img {
-  animation: shake 0.4s;
+.casket-glow {
+  position: absolute;
+  left: 8px;
+  right: 14px;
+  top: 14px;
+  height: 20px;
+  border-radius: 50%;
+  background: radial-gradient(#fff6a8, rgba(255, 210, 60, 0.6) 45%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.casket.open .casket-lid {
+  transform: translate(2px, -6px) rotate(32deg);
+}
+.casket.open .casket-glow {
+  opacity: 1;
+}
+.casket.peek .casket-lid {
+  animation: peek 0.45s;
+}
+@keyframes peek {
+  40% { transform: translate(1px, -3px) rotate(14deg); }
+  70% { transform: none; }
+}
+.casket.shake {
+  animation: shake 0.4s 0.3s;
 }
 @keyframes shake {
   25% { transform: translateX(-6px) rotate(-6deg); }
@@ -130,8 +191,8 @@ b, strong {
 .goal-track {
   position: relative;
   margin: 0 18px;
-  padding-top: 76px;
-  padding-bottom: 44px;
+  padding-top: 94px;
+  padding-bottom: 82px;
 }
 .goal-bar {
   height: 12px;
@@ -148,21 +209,14 @@ b, strong {
 .goal-miner {
   position: absolute;
   top: 0;
-  width: 70px;
-  height: 80px;
+  width: 80px;
+  height: 92px;
   transform: translateX(-50%);
   pointer-events: none;
 }
 .goal-miner canvas {
-  width: 70px;
-  height: 80px;
-}
-.goal-pick {
-  position: absolute;
-  left: 33px;
-  top: 22px;
-  width: 30px;
-  transform-origin: 20% 85%;
+  width: 80px;
+  height: 92px;
   image-rendering: pixelated;
 }
 .goal-chip {
@@ -180,7 +234,7 @@ b, strong {
 }
 .goal-milestone {
   position: absolute;
-  bottom: 0;
+  bottom: 38px;
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
@@ -204,6 +258,16 @@ b, strong {
 .goal-milestone img {
   width: 26px;
   image-rendering: pixelated;
+}
+/* The 99 cape sits close to the 25m ore, so it hangs a row lower on a longer tick */
+.goal-milestone.low {
+  bottom: 0;
+}
+.goal-milestone.low::before {
+  height: 51px;
+}
+.goal-milestone.special img {
+  filter: drop-shadow(0 0 4px #f5c400);
 }
 .goal-milestone.reached {
   color: #333;
@@ -396,10 +460,15 @@ b, strong {
   <p>Nice find. What now?</p>
   <form id="gate-form">
     <div class="scroll">
-      <input type="password" id="gate-input" autocomplete="off" aria-label="Password" autofocus>
+      <div class="scroll-field">
+        <input type="password" id="gate-input" autocomplete="off" aria-label="Password" autofocus>
+        <div class="scroll-mask" id="gate-mask" aria-hidden="true"></div>
+      </div>
     </div>
     <button type="submit" class="casket" id="gate-casket" title="Open" aria-label="Open">
-      <img src="/assets/img/hobbies/casket.png" alt="">
+      <img src="/assets/img/hobbies/casket-base.png" alt="">
+      <span class="casket-glow"></span>
+      <img class="casket-lid" src="/assets/img/hobbies/casket-lid.png" alt="">
     </button>
   </form>
   <p class="gate-error" id="gate-error">Not quite – try again.</p>
@@ -520,32 +589,34 @@ b, strong {
   <div class="goal-track">
     <div class="goal-miner" id="goal-miner" style="left: 15.7%">
       <canvas id="miner-canvas"></canvas>
-      <img class="goal-pick" id="goal-pick" src="/assets/img/hobbies/ores/pickaxe.png" alt="">
     </div>
     <div class="goal-bar"><div class="goal-fill" id="mining-fill" style="width: 15.7%"></div></div>
-    <div class="goal-milestone reached" data-xp="25000000" style="left: 12.5%" title="Iron ore – 25m XP">
+    <div class="goal-milestone low reached" data-xp="13034431" style="left: 6.51722%" title="Mining cape – 13,034,431 XP">
+      <img src="/assets/img/hobbies/ores/cape.png" alt="Mining cape"><span>13m</span>
+    </div>
+    <div class="goal-milestone reached" data-xp="25000000" style="left: 12.5%" title="Iron ore – 25,000,000 XP">
       <img src="/assets/img/hobbies/ores/iron.png" alt="Iron ore"><span>25m</span>
     </div>
-    <div class="goal-milestone" data-xp="50000000" style="left: 25%" title="Coal – 50m XP">
+    <div class="goal-milestone" data-xp="50000000" style="left: 25%" title="Coal – 50,000,000 XP">
       <img src="/assets/img/hobbies/ores/coal.png" alt="Coal"><span>50m</span>
     </div>
-    <div class="goal-milestone" data-xp="75000000" style="left: 37.5%" title="Gold ore – 75m XP">
+    <div class="goal-milestone" data-xp="75000000" style="left: 37.5%" title="Gold ore – 75,000,000 XP">
       <img src="/assets/img/hobbies/ores/gold.png" alt="Gold ore"><span>75m</span>
     </div>
-    <div class="goal-milestone" data-xp="100000000" style="left: 50%" title="Mithril ore – 100m XP">
+    <div class="goal-milestone" data-xp="100000000" style="left: 50%" title="Mithril ore – 100,000,000 XP">
       <img src="/assets/img/hobbies/ores/mithril.png" alt="Mithril ore"><span>100m</span>
     </div>
-    <div class="goal-milestone" data-xp="125000000" style="left: 62.5%" title="Adamantite ore – 125m XP">
+    <div class="goal-milestone" data-xp="125000000" style="left: 62.5%" title="Adamantite ore – 125,000,000 XP">
       <img src="/assets/img/hobbies/ores/adamantite.png" alt="Adamantite ore"><span>125m</span>
     </div>
-    <div class="goal-milestone" data-xp="150000000" style="left: 75%" title="Runite ore – 150m XP">
+    <div class="goal-milestone" data-xp="150000000" style="left: 75%" title="Runite ore – 150,000,000 XP">
       <img src="/assets/img/hobbies/ores/runite.png" alt="Runite ore"><span>150m</span>
     </div>
-    <div class="goal-milestone" data-xp="175000000" style="left: 87.5%" title="Amethyst – 175m XP">
+    <div class="goal-milestone" data-xp="175000000" style="left: 87.5%" title="Amethyst – 175,000,000 XP">
       <img src="/assets/img/hobbies/ores/amethyst.png" alt="Amethyst"><span>175m</span>
     </div>
-    <div class="goal-milestone" data-xp="200000000" style="left: 100%" title="Mining cape – 200m XP">
-      <img src="/assets/img/hobbies/ores/cape.png" alt="Mining cape"><span>200m</span>
+    <div class="goal-milestone special" data-xp="200000000" style="left: 100%" title="3rd age pickaxe – 200,000,000 XP">
+      <img src="/assets/img/hobbies/ores/third-age-pickaxe.png" alt="3rd age pickaxe"><span>200m</span>
     </div>
   </div>
 </div>
@@ -738,24 +809,39 @@ b, strong {
         secret.hidden = true;
         gate.hidden = false;
         document.getElementById("gate-input").value = "";
+        document.getElementById("gate-casket").classList.remove("open");
+        drawMask();
       }
     });
 
+    // Draw one dot per typed character, each with its own underline, plus a blinking caret.
+    var input = document.getElementById("gate-input");
+    var mask = document.getElementById("gate-mask");
+    function drawMask() {
+      var html = "";
+      for (var i = 0; i < input.value.length; i++) html += "<span>•</span>";
+      if (document.activeElement === input) html += '<span class="caret"></span>';
+      mask.innerHTML = html;
+    }
+    ["input", "focus", "blur"].forEach(function (ev) { input.addEventListener(ev, drawMask); });
+    drawMask();
+
+    var casket = document.getElementById("gate-casket");
     document.getElementById("gate-form").addEventListener("submit", function (e) {
       e.preventDefault();
-      var value = document.getElementById("gate-input").value;
-      crypto.subtle.digest("SHA-256", new TextEncoder().encode(value)).then(function (buf) {
+      crypto.subtle.digest("SHA-256", new TextEncoder().encode(input.value)).then(function (buf) {
         var hex = Array.from(new Uint8Array(buf)).map(function (b) {
           return b.toString(16).padStart(2, "0");
         }).join("");
         if (hex === HASH) {
-          unlock();
+          casket.classList.add("open");
+          setTimeout(unlock, 700);
         } else {
+          // The lid lifts a crack, slams shut, and the casket rattles.
           document.getElementById("gate-error").style.visibility = "visible";
-          var casket = document.getElementById("gate-casket");
-          casket.classList.remove("shake");
-          void casket.offsetWidth; // restart the animation
-          casket.classList.add("shake");
+          casket.classList.remove("peek", "shake");
+          void casket.offsetWidth; // restart the animations
+          casket.classList.add("peek", "shake");
         }
       });
     });
@@ -862,22 +948,50 @@ b, strong {
     renderer.render(scene, camera);
   });
 
-  // Little miner on the goal bar: the same character side-on, leaning into pickaxe swings.
-  // (The RuneProfile model has no skeleton, so the swing is the pickaxe icon plus a body lean.)
+  // Little miner on the goal bar: the same character, rendered at low resolution for a pixel-art look.
+  // The model is a single static mesh, so the pickaxe arm is cut out by position and swung about the shoulder.
   const miner = document.getElementById("goal-miner");
-  const pick = document.getElementById("goal-pick");
-  const minerRenderer = new THREE.WebGLRenderer({ canvas: document.getElementById("miner-canvas"), antialias: true, alpha: true });
-  minerRenderer.setPixelRatio(window.devicePixelRatio);
-  minerRenderer.setSize(70, 80, false);
+  const minerRenderer = new THREE.WebGLRenderer({ canvas: document.getElementById("miner-canvas"), antialias: false, alpha: true });
+  minerRenderer.setPixelRatio(1);
+  minerRenderer.setSize(40, 46, false); // drawn at 2x via CSS
   const minerScene = new THREE.Scene();
-  const minerCamera = new THREE.PerspectiveCamera(30, 70 / 80, 0.1, 50);
-  minerCamera.position.set(0, 0.85, 3.8);
+  const minerCamera = new THREE.PerspectiveCamera(30, 40 / 46, 0.1, 50);
+  minerCamera.position.set(0, 0.85, 4.2);
   minerCamera.lookAt(0, 0.8, 0);
-  const minerPivot = new THREE.Group(); // pivot at the feet
-  minerPivot.position.x = -0.15;
+  const minerPivot = new THREE.Group(); // pivot at the feet so the body leans into each strike
+  minerPivot.position.x = -0.1;
   minerScene.add(minerPivot);
+  const armPivots = [];
+  const SHOULDER = new THREE.Vector3(-30, 140, 0); // model units (right shoulder)
+  const isArm = (c) => (c.x < -21 && c.y > 88 && c.y < 150) || (c.x < -4 && c.z > 22 && c.y > 92);
   loader.load("/assets/img/hobbies/osrs-character.glb", (gltf) => {
     const body = gltf.scene;
+    const meshes = [];
+    body.traverse((o) => { if (o.isMesh) meshes.push(o); });
+    const a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3();
+    for (const mesh of meshes) {
+      const pos = mesh.geometry.attributes.position;
+      const idx = mesh.geometry.index.array;
+      const armIdx = [], bodyIdx = [];
+      for (let t = 0; t < idx.length; t += 3) {
+        a.fromBufferAttribute(pos, idx[t]);
+        b.fromBufferAttribute(pos, idx[t + 1]);
+        c.fromBufferAttribute(pos, idx[t + 2]);
+        const target = isArm(a.add(b).add(c).divideScalar(3)) ? armIdx : bodyIdx;
+        target.push(idx[t], idx[t + 1], idx[t + 2]);
+      }
+      const armGeometry = mesh.geometry.clone();
+      armGeometry.setIndex(armIdx);
+      mesh.geometry = mesh.geometry.clone();
+      mesh.geometry.setIndex(bodyIdx);
+      const arm = new THREE.Mesh(armGeometry, mesh.material);
+      arm.position.copy(SHOULDER).negate();
+      const pivot = new THREE.Group();
+      pivot.position.copy(SHOULDER);
+      pivot.add(arm);
+      mesh.add(pivot);
+      armPivots.push(pivot);
+    }
     const box = new THREE.Box3().setFromObject(body);
     const center = box.getCenter(new THREE.Vector3());
     body.position.set(-center.x, -box.min.y, -center.z);
@@ -887,22 +1001,22 @@ b, strong {
     minerPivot.add(facing);
   });
 
-  // Swing cycle: wind up, strike, hold on impact, recover. Returns the pickaxe angle in degrees.
-  const SWING_MS = 1100;
+  // Swing cycle in degrees of shoulder rotation: raise, strike down, hold on impact, return.
+  const SWING_MS = 1200;
   function swingAngle(p) {
-    if (p < 0.55) return -70 * (p / 0.55);
-    if (p < 0.7) return -70 + 125 * ((p - 0.55) / 0.15);
-    if (p < 0.85) return 55;
-    return 55 * (1 - (p - 0.85) / 0.15);
+    if (p < 0.5) return -30 * (p / 0.5);
+    if (p < 0.65) return -30 + 100 * ((p - 0.5) / 0.15);
+    if (p < 0.8) return 70;
+    return 70 * (1 - (p - 0.8) / 0.2);
   }
   function chips() {
     for (let i = 0; i < 3; i++) {
       const chip = document.createElement("span");
       chip.className = "goal-chip";
-      chip.style.left = "64px";
-      chip.style.top = "66px";
-      chip.style.setProperty("--dx", 4 + Math.random() * 14 + "px");
-      chip.style.setProperty("--dy", -8 - Math.random() * 16 + "px");
+      chip.style.left = "70px";
+      chip.style.top = "74px";
+      chip.style.setProperty("--dx", 2 + Math.random() * 12 + "px");
+      chip.style.setProperty("--dy", -6 - Math.random() * 14 + "px");
       miner.appendChild(chip);
       setTimeout(() => chip.remove(), 500);
     }
@@ -913,9 +1027,9 @@ b, strong {
   minerRenderer.setAnimationLoop((t) => {
     const p = still ? 0 : (t % SWING_MS) / SWING_MS;
     const angle = swingAngle(p);
-    pick.style.transform = "rotate(" + angle + "deg)";
-    minerPivot.rotation.z = -(angle / 55) * 0.12;
-    if (lastPhase < 0.7 && p >= 0.7) chips();
+    for (const pivot of armPivots) pivot.rotation.x = angle * Math.PI / 180;
+    minerPivot.rotation.z = -(angle / 70) * 0.08;
+    if (lastPhase < 0.65 && p >= 0.65) chips();
     lastPhase = p;
     minerRenderer.render(minerScene, minerCamera);
   });
