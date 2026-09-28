@@ -138,7 +138,7 @@ b, strong {
 .osrs-model {
   width: 100%;
   height: 420px;
-  margin: 0 0 24px; /* + the few px of canvas below the feet */
+  margin: 0 0 -42px; /* the canvas has ~74px of empty space below the feet */
   overflow: hidden;
   cursor: grab;
 }
@@ -318,6 +318,7 @@ b, strong {
 @media (max-width: 500px) {
   .osrs-model {
     height: 320px;
+    margin-bottom: -24px;
   }
   .osrs-cell {
     height: 62px;
@@ -363,17 +364,12 @@ b, strong {
   text-shadow: 2px 2px 0 #000;
   -webkit-font-smoothing: none;
 }
-.updated {
-  text-align: center;
-  font-size: 0.8em;
-  color: #999;
-}
 
 .favs {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
-  margin: 32px 0 20px;
+  margin: 22px 0 20px; /* the goal's milestone row leaves ~10px below its labels */
 }
 @media (max-width: 600px) {
   .favs {
@@ -589,7 +585,6 @@ b, strong {
     </div>
   </div>
 </div>
-<p class="updated" id="osrs-updated"></p>
 
 <div class="favs">
   <a class="fav" href="https://myanimelist.net/manga/1517/JoJo_no_Kimyou_na_Bouken_Part_1__Phantom_Blood">
@@ -898,9 +893,6 @@ b, strong {
           cell.title = cell.title.split(":")[0] + ": " + skill.experience.toLocaleString("en-US") + " XP";
         });
         document.getElementById("osrs-total").textContent = skills.overall.level;
-
-        document.getElementById("osrs-updated").textContent =
-          "Stats last updated " + new Date(player.updatedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) + ".";
       })
       .catch(function () {});
   })();
@@ -924,14 +916,14 @@ b, strong {
   const container = document.getElementById("osrs-model");
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
-  camera.position.set(0, 1.07, 2.9);
+  camera.position.set(0, 1.0, 3.6);
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio(window.devicePixelRatio);
   container.appendChild(renderer.domElement);
 
   const controls = new OrbitControls(camera, renderer.domElement);
-  controls.target.set(0, 0.89, 0);
+  controls.target.set(0, 0.75, 0);
   controls.enableZoom = false;
   controls.enablePan = false;
   controls.minPolarAngle = Math.PI / 4;
@@ -953,8 +945,8 @@ b, strong {
       pivot.add(model);
     });
   }
-  place("/assets/img/hobbies/osrs-character.glb", -0.35);
-  place("/assets/img/hobbies/osrs-pet.glb", 0.5);
+  place("/assets/img/hobbies/osrs-character.glb", -0.3);
+  place("/assets/img/hobbies/osrs-pet.glb", 0.6);
 
   // The page starts hidden behind the password, so size the canvas whenever it becomes visible.
   new ResizeObserver(() => {
