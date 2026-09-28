@@ -50,7 +50,8 @@ b, strong {
 }
 
 .goal {
-  margin: 10px 0 20px;
+  max-width: 384px;
+  margin: 16px auto 0;
 }
 .goal-label {
   display: flex;
@@ -232,14 +233,6 @@ b, strong {
 
 <div id="osrs-model" class="osrs-model" title="Drag to rotate"></div>
 
-<div class="goal">
-  <div class="goal-label">
-    <span>Mining</span>
-    <span><span id="mining-xp">31,374,069</span> / 200,000,000 XP (<span id="mining-pct">15.7</span>%)</span>
-  </div>
-  <div class="goal-bar"><div class="goal-fill" id="mining-fill" style="width: 15.7%"></div></div>
-</div>
-
 <div class="osrs-panel">
   <div class="osrs-grid">
     <div class="osrs-cell" data-skill="attack" title="Attack">
@@ -340,6 +333,13 @@ b, strong {
     </div>
   </div>
   <div class="osrs-total">Total level: <span id="osrs-total">2001</span></div>
+</div>
+<div class="goal">
+  <div class="goal-label">
+    <span>Mining</span>
+    <span><span id="mining-xp">31,374,069</span> / 200,000,000 XP (<span id="mining-pct">15.7</span>%)</span>
+  </div>
+  <div class="goal-bar"><div class="goal-fill" id="mining-fill" style="width: 15.7%"></div></div>
 </div>
 <p class="updated" id="osrs-updated"></p>
 
