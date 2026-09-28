@@ -1,7 +1,7 @@
 ---
 layout: work
-title: Hobbies
-permalink: /hobbies/
+title: Secret
+permalink: /secret/
 ---
 
 <style>
@@ -134,11 +134,11 @@ b, strong {
   visibility: hidden;
 }
 
-/* Equal 64px gaps between the model, the skills panel, the mining goal and the manga */
+/* Equal 80px gaps between the model, the skills panel, the mining goal and the manga */
 .osrs-model {
   width: 100%;
   height: 420px;
-  margin: 0 0 -10px; /* the canvas has ~74px of empty space below the feet */
+  margin: 0 0 6px; /* the canvas has ~74px of empty space below the feet */
   overflow: hidden;
   cursor: grab;
 }
@@ -151,7 +151,7 @@ b, strong {
 /* Mining goal: progress track with ore milestones and a little miner */
 .goal {
   max-width: 384px;
-  margin: 64px auto 0;
+  margin: 80px auto 0;
 }
 .goal-label {
   display: flex;
@@ -325,7 +325,7 @@ b, strong {
 @media (max-width: 500px) {
   .osrs-model {
     height: 320px;
-    margin-bottom: 8px; /* ~56px of empty canvas below the feet at this height */
+    margin-bottom: 24px; /* ~56px of empty canvas below the feet at this height */
   }
   .osrs-cell {
     height: 62px;
@@ -376,7 +376,7 @@ b, strong {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
-  margin: 57px 0 20px; /* the goal's lowest milestone leaves ~7px below its label */
+  margin: 73px 0 20px; /* the goal's lowest milestone leaves ~7px below its label */
 }
 @media (max-width: 600px) {
   .favs {
