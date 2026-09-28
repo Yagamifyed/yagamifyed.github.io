@@ -296,8 +296,11 @@ b, strong {
   max-width: 48%;
   max-height: 46px;
 }
+/* Each number is centred in a fixed box either side of the slash, so narrow digits (71) and wide ones (99)
+   sit the same distance from it */
 .osrs-lvl {
   position: absolute;
+  text-align: center;
   font-family: "RuneScape Small", monospace;
   font-size: 30px;
   line-height: 1;
@@ -306,11 +309,13 @@ b, strong {
   -webkit-font-smoothing: none;
 }
 .osrs-lvl-top {
-  left: 52%;
+  left: 50%;
+  width: 26%;
   top: 4px;
 }
 .osrs-lvl-bot {
-  right: 6px;
+  left: 71%;
+  width: 26%;
   bottom: 4px;
 }
 .osrs-slash {
@@ -340,11 +345,13 @@ b, strong {
     text-shadow: 1px 1px 0 #000;
   }
   .osrs-lvl-top {
-    left: 46%;
+    left: 44%;
+    width: 22%;
     top: 7px;
   }
   .osrs-lvl-bot {
-    right: 6px;
+    left: 74%;
+    width: 22%;
     bottom: 7px;
   }
   .osrs-slash {
