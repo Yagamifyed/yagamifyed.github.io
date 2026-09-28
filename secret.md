@@ -296,6 +296,65 @@ b, strong {
   max-width: 48%;
   max-height: 46px;
 }
+/* Bank: the in-game screenshots shown 1:1 (every sprite untouched), in the same stone frame as the skills */
+.bank {
+  width: 476px; /* 460px screenshot + 4px padding + 2px frame borders + 2px inner borders, each side */
+  max-width: 100%;
+  margin: 83px auto 0; /* 90px below the goal's lowest milestone label */
+  padding: 4px;
+  background: #1f1f1f;
+  border: 2px solid #050505;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.bank-tabs {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 4px;
+}
+.bank-tab {
+  width: 44px;
+  height: 36px;
+  padding: 0;
+  font-family: "RuneScape Small", monospace;
+  font-size: 30px;
+  line-height: 1;
+  color: #ff981f;
+  text-shadow: 2px 2px 0 #000;
+  -webkit-font-smoothing: none;
+  background: #343434;
+  border: 2px solid;
+  border-color: #464646 #161616 #161616 #464646;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px #0c0c0c;
+  cursor: pointer;
+}
+.bank-tab.active {
+  color: #ffff00;
+  background: #4a4238;
+  border-color: #6a5e4e #221d17 #221d17 #6a5e4e;
+}
+.bank-body {
+  background: #282928; /* the bank's own background, so the screenshots sit seamlessly */
+  border: 2px solid;
+  border-color: #161616 #464646 #464646 #161616;
+  line-height: 0;
+}
+.bank-page {
+  display: block;
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated; /* keep the sprites crisp when the screen scales them up */
+}
+.bank-page[hidden] {
+  display: none;
+}
+@media (max-width: 500px) {
+  .bank-page {
+    image-rendering: auto; /* shrinking pixel art with nearest-neighbour drops pixels; smooth is truer here */
+  }
+}
+
 /* Each number is centred in a fixed box either side of the slash, so narrow digits (71) and wide ones (99)
    sit the same distance from it */
 .osrs-lvl {
@@ -383,7 +442,7 @@ b, strong {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
-  margin: 83px 0 20px; /* the goal's lowest milestone leaves ~7px below its label */
+  margin: 90px 0 20px;
 }
 @media (max-width: 600px) {
   .favs {
@@ -600,6 +659,17 @@ b, strong {
     <div class="goal-milestone special" data-xp="200000000" style="left: 100%" title="3rd age pickaxe – 200,000,000 XP">
       <img src="/assets/img/hobbies/ores/third-age-pickaxe.png" alt="3rd age pickaxe"><span>200m</span>
     </div>
+  </div>
+</div>
+
+<div class="bank">
+  <div class="bank-tabs" role="tablist">
+    <button class="bank-tab active" role="tab" aria-selected="true" data-tab="1">1</button>
+    <button class="bank-tab" role="tab" aria-selected="false" data-tab="2">2</button>
+  </div>
+  <div class="bank-body">
+    <img class="bank-page" data-tab="1" src="/assets/img/hobbies/bank-1.png" alt="Bank tab 1" width="460" height="659">
+    <img class="bank-page" data-tab="2" src="/assets/img/hobbies/bank-2.png" alt="Bank tab 2" width="460" height="952" hidden>
   </div>
 </div>
 
@@ -862,6 +932,19 @@ b, strong {
     }
     ["input", "focus", "blur"].forEach(function (ev) { input.addEventListener(ev, drawMask); });
     drawMask();
+
+    // Bank tabs
+    document.querySelectorAll(".bank-tab").forEach(function (tab) {
+      tab.addEventListener("click", function () {
+        document.querySelectorAll(".bank-tab").forEach(function (t) {
+          t.classList.toggle("active", t === tab);
+          t.setAttribute("aria-selected", t === tab ? "true" : "false");
+        });
+        document.querySelectorAll(".bank-page").forEach(function (page) {
+          page.hidden = page.dataset.tab !== tab.dataset.tab;
+        });
+      });
+    });
 
     var casket = document.getElementById("gate-casket");
     document.getElementById("gate-form").addEventListener("submit", function (e) {
