@@ -103,52 +103,25 @@ b, strong {
   50% { opacity: 0; }
 }
 
-/* The casket is the submit button: its lid hinges open when clicked */
+/* The casket is the submit button */
 .casket {
-  position: relative;
-  width: 72px;
-  height: 64px;
   padding: 0;
   border: none;
   background: none;
   cursor: pointer;
 }
 .casket img {
-  position: absolute;
-  inset: 0;
+  display: block;
   width: 72px;
   image-rendering: pixelated;
+  transition: transform 0.15s;
 }
-.casket-lid {
-  transform-origin: 85% 20%;
-  transition: transform 0.25s ease-out;
+.casket:hover img,
+.casket:focus-visible img {
+  transform: translateY(-3px) scale(1.05);
 }
-.casket-glow {
-  position: absolute;
-  left: 8px;
-  right: 14px;
-  top: 14px;
-  height: 20px;
-  border-radius: 50%;
-  background: radial-gradient(#fff6a8, rgba(255, 210, 60, 0.6) 45%, transparent 70%);
-  opacity: 0;
-  transition: opacity 0.25s;
-}
-.casket.open .casket-lid {
-  transform: translate(2px, -6px) rotate(32deg);
-}
-.casket.open .casket-glow {
-  opacity: 1;
-}
-.casket.peek .casket-lid {
-  animation: peek 0.45s;
-}
-@keyframes peek {
-  40% { transform: translate(1px, -3px) rotate(14deg); }
-  70% { transform: none; }
-}
-.casket.shake {
-  animation: shake 0.4s 0.3s;
+.casket.shake img {
+  animation: shake 0.4s;
 }
 @keyframes shake {
   25% { transform: translateX(-6px) rotate(-6deg); }
@@ -192,7 +165,7 @@ b, strong {
   position: relative;
   margin: 0 18px;
   padding-top: 94px;
-  padding-bottom: 82px;
+  padding-bottom: 48px;
 }
 .goal-bar {
   height: 12px;
@@ -234,7 +207,7 @@ b, strong {
 }
 .goal-milestone {
   position: absolute;
-  bottom: 38px;
+  top: 110px; /* just below the bar (padding-top 94px + bar 12px + gap) */
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
@@ -258,13 +231,6 @@ b, strong {
 .goal-milestone img {
   width: 26px;
   image-rendering: pixelated;
-}
-/* The 99 cape sits close to the 25m ore, so it hangs a row lower on a longer tick */
-.goal-milestone.low {
-  bottom: 0;
-}
-.goal-milestone.low::before {
-  height: 51px;
 }
 .goal-milestone.special img {
   filter: drop-shadow(0 0 4px #f5c400);
@@ -466,9 +432,7 @@ b, strong {
       </div>
     </div>
     <button type="submit" class="casket" id="gate-casket" title="Open" aria-label="Open">
-      <img src="/assets/img/hobbies/casket-base.png" alt="">
-      <span class="casket-glow"></span>
-      <img class="casket-lid" src="/assets/img/hobbies/casket-lid.png" alt="">
+      <img src="/assets/img/hobbies/casket.png" alt="">
     </button>
   </form>
   <p class="gate-error" id="gate-error">Not quite – try again.</p>
@@ -591,29 +555,29 @@ b, strong {
       <canvas id="miner-canvas"></canvas>
     </div>
     <div class="goal-bar"><div class="goal-fill" id="mining-fill" style="width: 15.7%"></div></div>
-    <div class="goal-milestone low reached" data-xp="13034431" style="left: 6.51722%" title="Mining cape – 13,034,431 XP">
+    <div class="goal-milestone cape reached" data-xp="13034431" style="left: 6.51722%" title="Mining cape – 13,034,431 XP">
       <img src="/assets/img/hobbies/ores/cape.png" alt="Mining cape"><span>13m</span>
     </div>
-    <div class="goal-milestone reached" data-xp="25000000" style="left: 12.5%" title="Iron ore – 25,000,000 XP">
-      <img src="/assets/img/hobbies/ores/iron.png" alt="Iron ore"><span>25m</span>
+    <div class="goal-milestone reached" data-xp="25000000" style="left: 12.5%" title="25,000,000 XP">
+      <span>25m</span>
     </div>
-    <div class="goal-milestone" data-xp="50000000" style="left: 25%" title="Coal – 50,000,000 XP">
-      <img src="/assets/img/hobbies/ores/coal.png" alt="Coal"><span>50m</span>
+    <div class="goal-milestone" data-xp="50000000" style="left: 25%" title="50,000,000 XP">
+      <span>50m</span>
     </div>
-    <div class="goal-milestone" data-xp="75000000" style="left: 37.5%" title="Gold ore – 75,000,000 XP">
-      <img src="/assets/img/hobbies/ores/gold.png" alt="Gold ore"><span>75m</span>
+    <div class="goal-milestone" data-xp="75000000" style="left: 37.5%" title="75,000,000 XP">
+      <span>75m</span>
     </div>
-    <div class="goal-milestone" data-xp="100000000" style="left: 50%" title="Mithril ore – 100,000,000 XP">
-      <img src="/assets/img/hobbies/ores/mithril.png" alt="Mithril ore"><span>100m</span>
+    <div class="goal-milestone" data-xp="100000000" style="left: 50%" title="100,000,000 XP">
+      <span>100m</span>
     </div>
-    <div class="goal-milestone" data-xp="125000000" style="left: 62.5%" title="Adamantite ore – 125,000,000 XP">
-      <img src="/assets/img/hobbies/ores/adamantite.png" alt="Adamantite ore"><span>125m</span>
+    <div class="goal-milestone" data-xp="125000000" style="left: 62.5%" title="125,000,000 XP">
+      <span>125m</span>
     </div>
-    <div class="goal-milestone" data-xp="150000000" style="left: 75%" title="Runite ore – 150,000,000 XP">
-      <img src="/assets/img/hobbies/ores/runite.png" alt="Runite ore"><span>150m</span>
+    <div class="goal-milestone" data-xp="150000000" style="left: 75%" title="150,000,000 XP">
+      <span>150m</span>
     </div>
-    <div class="goal-milestone" data-xp="175000000" style="left: 87.5%" title="Amethyst – 175,000,000 XP">
-      <img src="/assets/img/hobbies/ores/amethyst.png" alt="Amethyst"><span>175m</span>
+    <div class="goal-milestone" data-xp="175000000" style="left: 87.5%" title="175,000,000 XP">
+      <span>175m</span>
     </div>
     <div class="goal-milestone special" data-xp="200000000" style="left: 100%" title="3rd age pickaxe – 200,000,000 XP">
       <img src="/assets/img/hobbies/ores/third-age-pickaxe.png" alt="3rd age pickaxe"><span>200m</span>
@@ -794,7 +758,7 @@ b, strong {
 <script>
   (function () {
     // SHA-256 of the password. To change it, run: printf 'newpassword' | shasum -a 256
-    var HASH = "0a0ae01ec0101c38fe09f935d147b8c72b86ec807b93645bc3870444e693cac0";
+    var HASH = "3338a5fdfc10e11cebdef7ffa6662e03257106eb43345c4436898c2370a92dc8";
     var gate = document.getElementById("gate");
     var secret = document.getElementById("secret");
 
@@ -809,7 +773,6 @@ b, strong {
         secret.hidden = true;
         gate.hidden = false;
         document.getElementById("gate-input").value = "";
-        document.getElementById("gate-casket").classList.remove("open");
         drawMask();
       }
     });
@@ -834,14 +797,12 @@ b, strong {
           return b.toString(16).padStart(2, "0");
         }).join("");
         if (hex === HASH) {
-          casket.classList.add("open");
-          setTimeout(unlock, 700);
+          unlock();
         } else {
-          // The lid lifts a crack, slams shut, and the casket rattles.
           document.getElementById("gate-error").style.visibility = "visible";
-          casket.classList.remove("peek", "shake");
-          void casket.offsetWidth; // restart the animations
-          casket.classList.add("peek", "shake");
+          casket.classList.remove("shake");
+          void casket.offsetWidth; // restart the animation
+          casket.classList.add("shake");
         }
       });
     });
@@ -1001,13 +962,16 @@ b, strong {
     minerPivot.add(facing);
   });
 
-  // Swing cycle in degrees of shoulder rotation: raise, strike down, hold on impact, return.
-  const SWING_MS = 1200;
+  // Swing cycle in degrees of shoulder rotation, eased so the motion never snaps:
+  // a slow wind-up, an accelerating strike, then an unhurried return.
+  const SWING_MS = 1400;
+  const easeInOut = (x) => 0.5 - 0.5 * Math.cos(Math.PI * x);
+  const easeIn = (x) => x * x;
+  const STRIKE = 0.62; // phase at which the pickaxe hits
   function swingAngle(p) {
-    if (p < 0.5) return -30 * (p / 0.5);
-    if (p < 0.65) return -30 + 100 * ((p - 0.5) / 0.15);
-    if (p < 0.8) return 70;
-    return 70 * (1 - (p - 0.8) / 0.2);
+    if (p < 0.45) return -35 * easeInOut(p / 0.45);
+    if (p < STRIKE) return -35 + 100 * easeIn((p - 0.45) / (STRIKE - 0.45));
+    return 65 * (1 - easeInOut((p - STRIKE) / (1 - STRIKE)));
   }
   function chips() {
     for (let i = 0; i < 3; i++) {
@@ -1028,8 +992,8 @@ b, strong {
     const p = still ? 0 : (t % SWING_MS) / SWING_MS;
     const angle = swingAngle(p);
     for (const pivot of armPivots) pivot.rotation.x = angle * Math.PI / 180;
-    minerPivot.rotation.z = -(angle / 70) * 0.08;
-    if (lastPhase < 0.65 && p >= 0.65) chips();
+    minerPivot.rotation.z = -(angle / 65) * 0.06;
+    if (lastPhase < STRIKE && p >= STRIKE) chips();
     lastPhase = p;
     minerRenderer.render(minerScene, minerCamera);
   });
