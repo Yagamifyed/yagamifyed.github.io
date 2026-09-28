@@ -446,8 +446,6 @@ b, strong {
 
 <div id="secret" hidden markdown="1">
 
-### Video Games
-
 <div id="osrs-model" class="osrs-model" title="Drag to rotate"></div>
 
 <div class="osrs-panel">
@@ -591,8 +589,6 @@ b, strong {
   </div>
 </div>
 <p class="updated" id="osrs-updated"></p>
-
-### Manga
 
 <div class="favs">
   <a class="fav" href="https://myanimelist.net/manga/1517/JoJo_no_Kimyou_na_Bouken_Part_1__Phantom_Blood">
@@ -755,9 +751,37 @@ b, strong {
     <span class="fav-score">★ 8</span>
     <span class="fav-title">Vinland Saga<small>Manga · 2005</small></span>
   </a>
+  <a class="fav" href="https://myanimelist.net/manga/142552/Fujiko_no_Kimyou_na_Shoseijutsu__Whitesnake_no_Gosan">
+    <img src="/assets/img/hobbies/manga/142552.jpg" alt="Fujiko no Kimyou na Shoseijutsu: Whitesnake no Gosan" loading="lazy">
+    <span class="fav-score">★ 7</span>
+    <span class="fav-title">Fujiko no Kimyou na Shoseijutsu: Whitesnake no Gosan<small>One-shot · 2021</small></span>
+  </a>
+  <a class="fav" href="https://myanimelist.net/manga/936/Homunculus">
+    <img src="/assets/img/hobbies/manga/936.jpg" alt="Homunculus" loading="lazy">
+    <span class="fav-score">★ 7</span>
+    <span class="fav-title">Homunculus<small>Manga · 2003</small></span>
+  </a>
+  <a class="fav" href="https://myanimelist.net/manga/14440/I_Am_a_Hero">
+    <img src="/assets/img/hobbies/manga/14440.jpg" alt="I Am a Hero" loading="lazy">
+    <span class="fav-score">★ 7</span>
+    <span class="fav-title">I Am a Hero<small>Manga · 2009</small></span>
+  </a>
+  <a class="fav" href="https://myanimelist.net/manga/91941/Made_in_Abyss">
+    <img src="/assets/img/hobbies/manga/91941.jpg" alt="Made in Abyss" loading="lazy">
+    <span class="fav-score">★ 7</span>
+    <span class="fav-title">Made in Abyss<small>Manga · 2012</small></span>
+  </a>
+  <a class="fav" href="https://myanimelist.net/manga/120865/One_Piece__Roronoa_Zoro_Umi_ni_Chiru">
+    <img src="/assets/img/hobbies/manga/120865.jpg" alt="One Piece: Boichi Covers Zolo vs. Mihawk" loading="lazy">
+    <span class="fav-score">★ 7</span>
+    <span class="fav-title">One Piece: Boichi Covers Zolo vs. Mihawk<small>One-shot · 2019</small></span>
+  </a>
+  <a class="fav" href="https://myanimelist.net/manga/145980/One_Piece__Nami_vs_Kalifa">
+    <img src="/assets/img/hobbies/manga/145980.jpg" alt="One Piece: Nami vs. Kalifa" loading="lazy">
+    <span class="fav-score">★ 7</span>
+    <span class="fav-title">One Piece: Nami vs. Kalifa<small>One-shot · 2022</small></span>
+  </a>
 </div>
-
-<p align="justify">For a full overview, see <a href="https://myanimelist.net/profile/Yagamifyed">here</a>.</p>
 
 </div>
 
@@ -929,13 +953,15 @@ b, strong {
   const minerPivot = new THREE.Group();
   minerPivot.position.x = -0.3;
   minerScene.add(minerPivot);
-  // Rig, in model units. The body bends smoothly (no seam): each vertex turns about a point low in the legs
-  // by an amount that grows with its height, so the feet stay planted and the chest takes the full bend.
+  // Rig, in model units. The body hinges at the hips: the bend fades in smoothly over the waist (no seam),
+  // the legs stay straight, and the hips shift back and drop a little as the chest goes forward, the way a
+  // person keeps their balance. The feet stay planted.
   // The pickaxe is split from the right arm and held by its handle; both arms turn at the shoulders so the
   // hands stay on it. Arms and pickaxe ride on the fully bent chest. The shield on the left side is dropped.
   const X_AXIS = new THREE.Vector3(1, 0, 0);
-  const BEND_PIVOT = new THREE.Vector3(0, 30, 0);
-  const BEND_FROM = 20, BEND_TO = 120; // heights over which the bend fades in
+  const BEND_PIVOT = new THREE.Vector3(0, 88, 0); // hips
+  const BEND_FROM = 72, BEND_TO = 112; // heights over which the bend fades in (the waist)
+  const HIP_BACK = 16, HIP_DROP = 7; // how far the hips move back / down at a 45 degree bend
   const RIGHT_SHOULDER = new THREE.Vector3(-30, 140, 0);
   const LEFT_SHOULDER = new THREE.Vector3(30, 140, 0);
   const GRIP = new THREE.Vector3(-22, 106, 18); // right hand at the end of the handle in the model's pose
@@ -1007,17 +1033,22 @@ b, strong {
     facing.add(body);
     minerPivot.add(facing);
   });
+  const hipOffset = new THREE.Vector3();
   function bendBody(bend) {
+    const amount = bend / (Math.PI / 4); // 1 at a 45 degree bend
+    hipOffset.set(0, -HIP_DROP * Math.abs(amount), -HIP_BACK * amount);
     for (const { mesh, rest } of bodies) {
       const arr = mesh.geometry.attributes.position.array;
       for (let v = 0; v < arr.length; v += 3) {
         const y = rest[v + 1], z = rest[v + 2];
         const k = Math.min(1, Math.max(0, (y - BEND_FROM) / (BEND_TO - BEND_FROM)));
-        const ang = bend * k * k * (3 - 2 * k); // smoothstep
+        const ang = bend * k * k * (3 - 2 * k); // smoothstep across the waist
         const cy = y - BEND_PIVOT.y, cz = z - BEND_PIVOT.z;
         const cos = Math.cos(ang), sin = Math.sin(ang);
-        arr[v + 1] = BEND_PIVOT.y + cy * cos - cz * sin;
-        arr[v + 2] = BEND_PIVOT.z + cy * sin + cz * cos;
+        // legs lean with the hips (0 at the feet, 1 at the hips); everything above moves with the hips
+        const lean = Math.min(1, Math.max(0, y / BEND_PIVOT.y));
+        arr[v + 1] = BEND_PIVOT.y + cy * cos - cz * sin + hipOffset.y * lean;
+        arr[v + 2] = BEND_PIVOT.z + cy * sin + cz * cos + hipOffset.z * lean;
       }
       mesh.geometry.attributes.position.needsUpdate = true;
     }
@@ -1025,20 +1056,20 @@ b, strong {
 
   // Keyframes measured from the OSRS wiki's mining animation (File:Mining.gif), times in ms of an 800 ms cycle.
   // Angles in degrees relative to the ground: hand = shoulder -> hands, handle = hands -> pickaxe head end
-  // (0 = straight ahead, 90 = straight up), bend = forward bend of the body.
-  // "stop" keys start and end at rest (the strike and the held wind-up); the rest flow through smoothly.
+  // (0 = straight ahead, 90 = straight up), bend = forward bend at the hips.
+  // Nothing is frozen: the strike sinks a little further into the rock and the wind-up keeps rising slowly.
   const KEYS = [
-    { t: 0, hand: -66, handle: -49, bend: 42, stop: true }, // strike: bent over, pickaxe in the rock
-    { t: 110, hand: -66, handle: -49, bend: 42, stop: true }, // held in the rock
-    { t: 170, hand: -67, handle: -7, bend: 12 }, // pulled out, handle level
+    { t: 0, hand: -66, handle: -49, bend: 40, stop: true }, // strike: pickaxe bites the rock
+    { t: 110, hand: -70, handle: -54, bend: 44 }, // follow-through into the rock
+    { t: 170, hand: -67, handle: -7, bend: 14 }, // pulled out, handle level
     { t: 230, hand: -25, handle: 118, bend: 5 }, // pickaxe flips up
-    { t: 290, hand: 2, handle: 131, bend: 2 }, // hands rise in front
-    { t: 340, hand: 45, handle: 137, bend: 0 },
-    { t: 420, hand: 75, handle: 165, bend: -2 },
-    { t: 460, hand: 88, handle: 178, bend: -3, stop: true }, // wound up: arms straight up, pickaxe level behind
-    { t: 720, hand: 88, handle: 178, bend: -3, stop: true }, // held
-    { t: 770, hand: -21, handle: 87, bend: 8 }, // arms thrown forward, handle upright
-    { t: 800, hand: -66, handle: -49, bend: 42, impact: true }, // into the rock
+    { t: 290, hand: 2, handle: 131, bend: 1 }, // hands rise in front
+    { t: 340, hand: 45, handle: 137, bend: -2 },
+    { t: 420, hand: 75, handle: 165, bend: -4 },
+    { t: 470, hand: 86, handle: 174, bend: -5 }, // wound up: arms straight up, pickaxe level behind
+    { t: 710, hand: 92, handle: 184, bend: -7, stop: true }, // still drawing back, then...
+    { t: 770, hand: -21, handle: 87, bend: 10 }, // arms thrown forward, handle upright
+    { t: 800, hand: -66, handle: -49, bend: 40, impact: true }, // into the rock
   ];
   const CYCLE = 800, SWING_MS = 900; // the GIF's timing, played slightly slower
   const CHANNELS = ["hand", "handle", "bend"];
@@ -1087,7 +1118,10 @@ b, strong {
     const pick = (HANDLE_REST - handle - bend) * DEG;
     bendBody(bend * DEG);
     grip.copy(handOffset).applyAxisAngle(X_AXIS, arm).add(RIGHT_SHOULDER).sub(BEND_PIVOT);
-    for (const upper of uppers) upper.rotation.x = bend * DEG;
+    for (const upper of uppers) {
+      upper.position.copy(BEND_PIVOT).add(hipOffset);
+      upper.rotation.x = bend * DEG;
+    }
     for (const pivot of rightArms) pivot.rotation.x = arm;
     for (const pivot of leftArms) pivot.rotation.set(arm + LEFT_OFFSET, 0, LEFT_INWARD);
     for (const pivot of pickaxes) {
