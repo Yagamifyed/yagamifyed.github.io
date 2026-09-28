@@ -923,6 +923,30 @@ b, strong {
   import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
   import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
+  // The Mining cape emblem (pickaxe) is missing from the RuneProfile model, so draw it on the back of the cape.
+  // Outlines traced from the Mining cape item image (pixel coordinates), placed in model units.
+  const EMBLEM_POS = new THREE.Vector3(0, 100, -18.5); // on the back of the cape
+  const EMBLEM_TILT = 0.12; // the cape leans back slightly towards the hem
+  function makeEmblem() {
+    const k = 0.085, cx = 388, cy = 785;
+    const shape = (pts) => new THREE.Shape(pts.map(([x, y]) => new THREE.Vector2((x - cx) * k, -(y - cy) * k)));
+    const handle = shape([[445, 578], [468, 563], [515, 598], [512, 622], [492, 632], [455, 700], [290, 1007],
+      [270, 1007], [228, 985], [298, 905], [385, 690], [420, 620]]);
+    const head = shape([[218, 682], [262, 612], [300, 600], [390, 588], [455, 615], [520, 660], [550, 700], [558, 790],
+      [542, 760], [508, 705], [458, 664], [392, 640], [324, 638], [262, 668]]);
+    const group = new THREE.Group();
+    const add = (sh, color, z) => {
+      const mesh = new THREE.Mesh(new THREE.ShapeGeometry(sh), new THREE.MeshBasicMaterial({ color, side: THREE.DoubleSide }));
+      mesh.position.z = z;
+      group.add(mesh);
+    };
+    add(handle, 0x8a6414, 0);
+    add(head, 0xa89e9e, 0.3); // pick head sits over the handle
+    group.position.copy(EMBLEM_POS);
+    group.rotation.set(EMBLEM_TILT, Math.PI, 0); // face backwards, as seen from behind
+    return group;
+  }
+
   const container = document.getElementById("osrs-model");
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
@@ -949,6 +973,11 @@ b, strong {
     pivots.push(pivot);
     loader.load(url, (gltf) => {
       const model = gltf.scene;
+      if (url.includes("character")) {
+        let first = null;
+        model.traverse((o) => { if (o.isMesh && !first) first = o; });
+        first.add(makeEmblem());
+      }
       const box = new THREE.Box3().setFromObject(model);
       const center = box.getCenter(new THREE.Vector3());
       model.position.set(-center.x, -box.min.y, -center.z);
@@ -1009,7 +1038,7 @@ b, strong {
   const isRightArm = (c) => c.x < -21 && c.y > 88 && c.y < 150;
   const isShield = (c) => c.x > 34 && (c.z > 16 || c.z < -16 || c.y < 115);
   const isLeftArm = (c) => c.x > 21 && c.y > 88 && c.y < 150;
-  const uppers = [], bodies = [], rightArms = [], leftArms = [], pickaxes = [], capes = [];
+  const uppers = [], bodies = [], rightArms = [], leftArms = [], pickaxes = [], capes = [], capeEmblems = [];
   function part(mesh, index, parent, pivotPoint, parentOrigin, list) {
     const geometry = mesh.geometry.clone();
     geometry.setIndex(index);
@@ -1053,6 +1082,14 @@ b, strong {
       const cape = capes[capes.length - 1].children[0];
       cape.frustumCulled = false;
       cape.userData.rest = Float32Array.from(cape.geometry.attributes.position.array);
+      if (i === 0) {
+        const emblem = makeEmblem();
+        emblem.position.sub(CAPE_TOP);
+        const holder = new THREE.Group(); // swings with the cape about its top edge
+        holder.add(emblem);
+        capes[capes.length - 1].add(holder);
+        capeEmblems.push(holder);
+      }
       mesh.geometry = mesh.geometry.clone();
       mesh.geometry.setIndex(bodyIdx);
       mesh.frustumCulled = false;
@@ -1137,7 +1174,13 @@ b, strong {
       cape.angle = limit;
       if (cape.vel < 0) cape.vel *= -0.2;
     }
-    deformCapes(cape.angle, Math.min(14, Math.max(0, bendVel) * 4));
+    const billow = Math.min(14, Math.max(0, bendVel) * 4);
+    deformCapes(cape.angle, billow);
+    const d = (CAPE_TOP.y - EMBLEM_POS.y) / 140; // the emblem's place along the cape, as in deformCapes
+    for (const holder of capeEmblems) {
+      holder.rotation.x = cape.angle;
+      holder.position.z = -billow * d * d;
+    }
   }
 
   // Keyframes measured from the OSRS wiki's mining animation (File:Mining.gif), times in ms of an 800 ms cycle.
