@@ -22,20 +22,77 @@ b, strong {
   text-align: center;
   margin: 60px 0;
 }
-.gate input {
-  font: inherit;
-  padding: 6px 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+.gate form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
 }
-.gate button {
+
+/* Password field on a parchment scroll with rolled ends */
+.scroll {
+  position: relative;
+  padding: 16px 34px;
+  background: linear-gradient(#f4e4b8, #e3c98f);
+  border-top: 2px solid #9a7440;
+  border-bottom: 2px solid #9a7440;
+  box-shadow: 0 3px 6px rgba(80, 50, 10, 0.25);
+}
+.scroll::before,
+.scroll::after {
+  content: "";
+  position: absolute;
+  top: -8px;
+  bottom: -8px;
+  width: 20px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #8a6331, #f0dca8 45%, #b08850);
+  box-shadow: 0 2px 4px rgba(80, 50, 10, 0.35);
+}
+.scroll::before {
+  left: -10px;
+}
+.scroll::after {
+  right: -10px;
+}
+.scroll input {
+  width: 180px;
+  max-width: 50vw;
+  padding: 4px 6px;
   font: inherit;
-  padding: 6px 14px;
-  margin-left: 6px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  font-size: 1.1em;
+  text-align: center;
+  color: #3b2a14;
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed #8a6331;
+  outline: none;
+}
+
+/* The casket is the submit button */
+.casket {
+  padding: 0;
+  border: none;
   background: none;
   cursor: pointer;
+}
+.casket img {
+  display: block;
+  width: 72px;
+  image-rendering: pixelated;
+  transition: transform 0.15s;
+}
+.casket:hover img,
+.casket:focus-visible img {
+  transform: translateY(-3px) scale(1.05);
+}
+.casket.shake img {
+  animation: shake 0.4s;
+}
+@keyframes shake {
+  25% { transform: translateX(-6px) rotate(-6deg); }
+  50% { transform: translateX(6px) rotate(6deg); }
+  75% { transform: translateX(-3px) rotate(-3deg); }
 }
 .gate-error {
   color: #D21515;
@@ -55,26 +112,103 @@ b, strong {
   height: 100% !important;
 }
 
+/* Mining goal: progress track with ore milestones and a little miner */
 .goal {
   max-width: 384px;
-  margin: 16px auto 0;
+  margin: 20px auto 0;
 }
 .goal-label {
   display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   font-size: 0.9em;
-  margin-bottom: 4px;
+}
+.goal-label img {
+  height: 22px;
+}
+.goal-track {
+  position: relative;
+  margin: 0 18px;
+  padding-top: 76px;
+  padding-bottom: 44px;
 }
 .goal-bar {
-  height: 10px;
-  border-radius: 5px;
+  height: 12px;
+  border-radius: 6px;
   background: #eee;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15);
   overflow: hidden;
 }
 .goal-fill {
   height: 100%;
-  background: #D21515;
+  border-radius: 6px;
+  background: linear-gradient(#e0413f, #b31010);
+}
+.goal-miner {
+  position: absolute;
+  top: 0;
+  width: 70px;
+  height: 80px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.goal-miner canvas {
+  width: 70px;
+  height: 80px;
+}
+.goal-pick {
+  position: absolute;
+  left: 33px;
+  top: 22px;
+  width: 30px;
+  transform-origin: 20% 85%;
+  image-rendering: pixelated;
+}
+.goal-chip {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #6b5a45;
+  animation: chip 0.5s ease-out forwards;
+}
+@keyframes chip {
+  to {
+    transform: translate(var(--dx), var(--dy));
+    opacity: 0;
+  }
+}
+.goal-milestone {
+  position: absolute;
+  bottom: 0;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.7em;
+  line-height: 1.2;
+  color: #999;
+  filter: grayscale(1);
+  opacity: 0.45;
+}
+.goal-milestone::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  width: 2px;
+  height: 17px;
+  margin-left: -1px;
+  background: rgba(0, 0, 0, 0.25);
+}
+.goal-milestone img {
+  width: 26px;
+  image-rendering: pixelated;
+}
+.goal-milestone.reached {
+  color: #333;
+  filter: none;
+  opacity: 1;
 }
 
 @font-face {
@@ -261,8 +395,12 @@ b, strong {
 <div class="gate" id="gate">
   <p>Nice find. What now?</p>
   <form id="gate-form">
-    <input type="password" id="gate-input" autocomplete="off" autofocus>
-    <button type="submit">Enter</button>
+    <div class="scroll">
+      <input type="password" id="gate-input" autocomplete="off" aria-label="Password" autofocus>
+    </div>
+    <button type="submit" class="casket" id="gate-casket" title="Open" aria-label="Open">
+      <img src="/assets/img/hobbies/casket.png" alt="">
+    </button>
   </form>
   <p class="gate-error" id="gate-error">Not quite – try again.</p>
 </div>
@@ -376,10 +514,40 @@ b, strong {
 </div>
 <div class="goal">
   <div class="goal-label">
-    <span>Mining</span>
-    <span><span id="mining-xp">31,374,069</span> / 200,000,000 XP (<span id="mining-pct">15.7</span>%)</span>
+    <img src="/assets/img/hobbies/skills/mining.png" alt="Mining">
+    <span><span id="mining-xp">31,395,445</span> / 200,000,000 XP (<span id="mining-pct">15.7</span>%)</span>
   </div>
-  <div class="goal-bar"><div class="goal-fill" id="mining-fill" style="width: 15.7%"></div></div>
+  <div class="goal-track">
+    <div class="goal-miner" id="goal-miner" style="left: 15.7%">
+      <canvas id="miner-canvas"></canvas>
+      <img class="goal-pick" id="goal-pick" src="/assets/img/hobbies/ores/pickaxe.png" alt="">
+    </div>
+    <div class="goal-bar"><div class="goal-fill" id="mining-fill" style="width: 15.7%"></div></div>
+    <div class="goal-milestone reached" data-xp="25000000" style="left: 12.5%" title="Iron ore – 25m XP">
+      <img src="/assets/img/hobbies/ores/iron.png" alt="Iron ore"><span>25m</span>
+    </div>
+    <div class="goal-milestone" data-xp="50000000" style="left: 25%" title="Coal – 50m XP">
+      <img src="/assets/img/hobbies/ores/coal.png" alt="Coal"><span>50m</span>
+    </div>
+    <div class="goal-milestone" data-xp="75000000" style="left: 37.5%" title="Gold ore – 75m XP">
+      <img src="/assets/img/hobbies/ores/gold.png" alt="Gold ore"><span>75m</span>
+    </div>
+    <div class="goal-milestone" data-xp="100000000" style="left: 50%" title="Mithril ore – 100m XP">
+      <img src="/assets/img/hobbies/ores/mithril.png" alt="Mithril ore"><span>100m</span>
+    </div>
+    <div class="goal-milestone" data-xp="125000000" style="left: 62.5%" title="Adamantite ore – 125m XP">
+      <img src="/assets/img/hobbies/ores/adamantite.png" alt="Adamantite ore"><span>125m</span>
+    </div>
+    <div class="goal-milestone" data-xp="150000000" style="left: 75%" title="Runite ore – 150m XP">
+      <img src="/assets/img/hobbies/ores/runite.png" alt="Runite ore"><span>150m</span>
+    </div>
+    <div class="goal-milestone" data-xp="175000000" style="left: 87.5%" title="Amethyst – 175m XP">
+      <img src="/assets/img/hobbies/ores/amethyst.png" alt="Amethyst"><span>175m</span>
+    </div>
+    <div class="goal-milestone" data-xp="200000000" style="left: 100%" title="Mining cape – 200m XP">
+      <img src="/assets/img/hobbies/ores/cape.png" alt="Mining cape"><span>200m</span>
+    </div>
+  </div>
 </div>
 <p class="updated" id="osrs-updated"></p>
 
@@ -584,6 +752,10 @@ b, strong {
           unlock();
         } else {
           document.getElementById("gate-error").style.visibility = "visible";
+          var casket = document.getElementById("gate-casket");
+          casket.classList.remove("shake");
+          void casket.offsetWidth; // restart the animation
+          casket.classList.add("shake");
         }
       });
     });
@@ -604,6 +776,10 @@ b, strong {
         document.getElementById("mining-xp").textContent = xp.toLocaleString("en-US");
         document.getElementById("mining-pct").textContent = pct;
         document.getElementById("mining-fill").style.width = pct + "%";
+        document.getElementById("goal-miner").style.left = pct + "%";
+        document.querySelectorAll(".goal-milestone").forEach(function (m) {
+          m.classList.toggle("reached", xp >= Number(m.dataset.xp));
+        });
 
         document.querySelectorAll(".osrs-cell").forEach(function (cell) {
           var skill = skills[cell.dataset.skill];
@@ -684,5 +860,63 @@ b, strong {
     for (const pivot of pivots) pivot.rotation.y += 0.01;
     controls.update();
     renderer.render(scene, camera);
+  });
+
+  // Little miner on the goal bar: the same character side-on, leaning into pickaxe swings.
+  // (The RuneProfile model has no skeleton, so the swing is the pickaxe icon plus a body lean.)
+  const miner = document.getElementById("goal-miner");
+  const pick = document.getElementById("goal-pick");
+  const minerRenderer = new THREE.WebGLRenderer({ canvas: document.getElementById("miner-canvas"), antialias: true, alpha: true });
+  minerRenderer.setPixelRatio(window.devicePixelRatio);
+  minerRenderer.setSize(70, 80, false);
+  const minerScene = new THREE.Scene();
+  const minerCamera = new THREE.PerspectiveCamera(30, 70 / 80, 0.1, 50);
+  minerCamera.position.set(0, 0.85, 3.8);
+  minerCamera.lookAt(0, 0.8, 0);
+  const minerPivot = new THREE.Group(); // pivot at the feet
+  minerPivot.position.x = -0.15;
+  minerScene.add(minerPivot);
+  loader.load("/assets/img/hobbies/osrs-character.glb", (gltf) => {
+    const body = gltf.scene;
+    const box = new THREE.Box3().setFromObject(body);
+    const center = box.getCenter(new THREE.Vector3());
+    body.position.set(-center.x, -box.min.y, -center.z);
+    const facing = new THREE.Group();
+    facing.rotation.y = Math.PI / 2; // face right, towards the next milestone
+    facing.add(body);
+    minerPivot.add(facing);
+  });
+
+  // Swing cycle: wind up, strike, hold on impact, recover. Returns the pickaxe angle in degrees.
+  const SWING_MS = 1100;
+  function swingAngle(p) {
+    if (p < 0.55) return -70 * (p / 0.55);
+    if (p < 0.7) return -70 + 125 * ((p - 0.55) / 0.15);
+    if (p < 0.85) return 55;
+    return 55 * (1 - (p - 0.85) / 0.15);
+  }
+  function chips() {
+    for (let i = 0; i < 3; i++) {
+      const chip = document.createElement("span");
+      chip.className = "goal-chip";
+      chip.style.left = "64px";
+      chip.style.top = "66px";
+      chip.style.setProperty("--dx", 4 + Math.random() * 14 + "px");
+      chip.style.setProperty("--dy", -8 - Math.random() * 16 + "px");
+      miner.appendChild(chip);
+      setTimeout(() => chip.remove(), 500);
+    }
+  }
+
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let lastPhase = 0;
+  minerRenderer.setAnimationLoop((t) => {
+    const p = still ? 0 : (t % SWING_MS) / SWING_MS;
+    const angle = swingAngle(p);
+    pick.style.transform = "rotate(" + angle + "deg)";
+    minerPivot.rotation.z = -(angle / 55) * 0.12;
+    if (lastPhase < 0.7 && p >= 0.7) chips();
+    lastPhase = p;
+    minerRenderer.render(minerScene, minerCamera);
   });
 </script>
