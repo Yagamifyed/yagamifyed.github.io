@@ -259,7 +259,7 @@ b, strong {
 </style>
 
 <div class="gate" id="gate">
-  <p>Nice find. What's the password?</p>
+  <p>Nice find. What now?</p>
   <form id="gate-form">
     <input type="password" id="gate-input" autocomplete="off" autofocus>
     <button type="submit">Enter</button>
