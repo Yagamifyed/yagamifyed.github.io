@@ -159,6 +159,14 @@ b, strong {
   gap: 8px;
   font-size: 0.9em;
 }
+.goal-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.goal-name img {
+  height: 16px;
+}
 .goal-track {
   position: relative;
   margin: 0 18px;
@@ -453,7 +461,7 @@ b, strong {
       <span class="osrs-lvl osrs-lvl-top">99</span><span class="osrs-slash"></span><span class="osrs-lvl osrs-lvl-bot">99</span>
     </div>
     <div class="osrs-cell" data-skill="mining" title="Mining">
-      <span>Mining</span>
+      <img src="/assets/img/hobbies/skills/mining.png?v=2" alt="Mining">
       <span class="osrs-lvl osrs-lvl-top">99</span><span class="osrs-slash"></span><span class="osrs-lvl osrs-lvl-bot">99</span>
     </div>
     <div class="osrs-cell" data-skill="strength" title="Strength">
@@ -545,7 +553,7 @@ b, strong {
 </div>
 <div class="goal">
   <div class="goal-label">
-    <span>Mining</span>
+    <span class="goal-name"><img src="/assets/img/hobbies/skills/mining.png?v=2" alt="">Mining</span>
     <span><span id="mining-xp">31,395,445</span> / 200,000,000 XP (<span id="mining-pct">15.7</span>%)</span>
   </div>
   <div class="goal-track">
@@ -921,14 +929,16 @@ b, strong {
   const minerPivot = new THREE.Group();
   minerPivot.position.x = -0.3;
   minerScene.add(minerPivot);
-  // Rig, in model units. The upper body is split at the hips so the miner can bend into the strike; the
-  // pickaxe is split from the right arm and held by its handle, and both arms turn at the shoulders so the
-  // hands stay on it. The shield on the left side is dropped.
+  // Rig, in model units. The body bends smoothly (no seam): each vertex turns about a point low in the legs
+  // by an amount that grows with its height, so the feet stay planted and the chest takes the full bend.
+  // The pickaxe is split from the right arm and held by its handle; both arms turn at the shoulders so the
+  // hands stay on it. Arms and pickaxe ride on the fully bent chest. The shield on the left side is dropped.
   const X_AXIS = new THREE.Vector3(1, 0, 0);
-  const HIP = new THREE.Vector3(0, 82, 0);
+  const BEND_PIVOT = new THREE.Vector3(0, 30, 0);
+  const BEND_FROM = 20, BEND_TO = 120; // heights over which the bend fades in
   const RIGHT_SHOULDER = new THREE.Vector3(-30, 140, 0);
   const LEFT_SHOULDER = new THREE.Vector3(30, 140, 0);
-  const GRIP = new THREE.Vector3(-22, 106, 18); // right hand on the handle in the model's pose
+  const GRIP = new THREE.Vector3(-22, 106, 18); // right hand at the end of the handle in the model's pose
   const HAND_REST = -62; // direction shoulder -> hand in the model's pose, degrees above forward
   const HANDLE_REST = 41; // direction grip -> pickaxe head end in the model's pose, degrees above forward
   const LEFT_INWARD = -40 * Math.PI / 180; // bring the left arm across the body to the handle
@@ -937,7 +947,7 @@ b, strong {
   const isRightArm = (c) => c.x < -21 && c.y > 88 && c.y < 150;
   const isShield = (c) => c.x > 34 && (c.z > 16 || c.z < -16 || c.y < 115);
   const isLeftArm = (c) => c.x > 21 && c.y > 88 && c.y < 150;
-  const torsos = [], rightArms = [], leftArms = [], pickaxes = [];
+  const uppers = [], bodies = [], rightArms = [], leftArms = [], pickaxes = [];
   function part(mesh, index, parent, pivotPoint, parentOrigin, list) {
     const geometry = mesh.geometry.clone();
     geometry.setIndex(index);
@@ -948,9 +958,7 @@ b, strong {
     pivot.add(piece);
     parent.add(pivot);
     list.push(pivot);
-    return pivot;
   }
-  const ORIGIN = new THREE.Vector3();
   loader.load("/assets/img/hobbies/osrs-character.glb", (gltf) => {
     const body = gltf.scene;
     const meshes = [];
@@ -959,31 +967,36 @@ b, strong {
     meshes.forEach((mesh, i) => {
       const pos = mesh.geometry.attributes.position;
       const idx = mesh.geometry.index.array;
-      const pickIdx = [], rightIdx = [], leftIdx = [], torsoIdx = [], legIdx = [];
+      const pickIdx = [], rightIdx = [], leftIdx = [], bodyIdx = [];
       for (let t = 0; t < idx.length; t += 3) {
         a.fromBufferAttribute(pos, idx[t]);
         b.fromBufferAttribute(pos, idx[t + 1]);
         c.fromBufferAttribute(pos, idx[t + 2]);
         const centre = a.add(b).add(c).divideScalar(3);
         if (isShield(centre)) continue;
-        const target = isPickaxe(centre) ? pickIdx : isRightArm(centre) ? rightIdx : isLeftArm(centre) ? leftIdx
-          : centre.y > HIP.y ? torsoIdx : legIdx;
+        const target = isPickaxe(centre) ? pickIdx : isRightArm(centre) ? rightIdx : isLeftArm(centre) ? leftIdx : bodyIdx;
         target.push(idx[t], idx[t + 1], idx[t + 2]);
       }
-      const torso = part(mesh, torsoIdx, mesh, HIP, ORIGIN, torsos);
-      part(mesh, rightIdx, torso, RIGHT_SHOULDER, HIP, rightArms);
-      part(mesh, leftIdx, torso, LEFT_SHOULDER, HIP, leftArms);
-      part(mesh, pickIdx, torso, GRIP, HIP, pickaxes);
+      // the chest frame that the arms and pickaxe hang from
+      const upper = new THREE.Group();
+      upper.position.copy(BEND_PIVOT);
+      mesh.add(upper);
+      uppers.push(upper);
+      part(mesh, rightIdx, upper, RIGHT_SHOULDER, BEND_PIVOT, rightArms);
+      part(mesh, leftIdx, upper, LEFT_SHOULDER, BEND_PIVOT, leftArms);
+      part(mesh, pickIdx, upper, GRIP, BEND_PIVOT, pickaxes);
       mesh.geometry = mesh.geometry.clone();
-      mesh.geometry.setIndex(legIdx);
+      mesh.geometry.setIndex(bodyIdx);
+      mesh.frustumCulled = false;
+      bodies.push({ mesh, rest: Float32Array.from(mesh.geometry.attributes.position.array) });
       if (i === 0) {
         // Headless head: the model's neck stump is too small to survive pixelation, so draw a bolder one.
         const stump = new THREE.Mesh(new THREE.CylinderGeometry(11, 12, 10, 8), new THREE.MeshBasicMaterial({ color: 0xa3201a }));
-        stump.position.set(0, 167, 3).sub(HIP);
+        stump.position.set(0, 167, 3).sub(BEND_PIVOT);
         const wound = new THREE.Mesh(new THREE.CylinderGeometry(8, 8, 2, 8), new THREE.MeshBasicMaterial({ color: 0xf0782a }));
         wound.position.y = 5.5;
         stump.add(wound);
-        torso.add(stump);
+        upper.add(stump);
       }
     });
     const box = new THREE.Box3().setFromObject(body);
@@ -994,36 +1007,59 @@ b, strong {
     facing.add(body);
     minerPivot.add(facing);
   });
+  function bendBody(bend) {
+    for (const { mesh, rest } of bodies) {
+      const arr = mesh.geometry.attributes.position.array;
+      for (let v = 0; v < arr.length; v += 3) {
+        const y = rest[v + 1], z = rest[v + 2];
+        const k = Math.min(1, Math.max(0, (y - BEND_FROM) / (BEND_TO - BEND_FROM)));
+        const ang = bend * k * k * (3 - 2 * k); // smoothstep
+        const cy = y - BEND_PIVOT.y, cz = z - BEND_PIVOT.z;
+        const cos = Math.cos(ang), sin = Math.sin(ang);
+        arr[v + 1] = BEND_PIVOT.y + cy * cos - cz * sin;
+        arr[v + 2] = BEND_PIVOT.z + cy * sin + cz * cos;
+      }
+      mesh.geometry.attributes.position.needsUpdate = true;
+    }
+  }
 
-  // Keyframes traced from the OSRS wiki's mining animation. Angles in degrees:
-  //   hand   - direction shoulder -> hands, above forward (in the torso's frame)
-  //   handle - direction hands -> pickaxe head end, above forward (in the torso's frame)
-  //   bend   - forward bend at the hips
-  // ease: "io" for ordinary moves, "in" to accelerate into the strike.
+  // Keyframes measured from the OSRS wiki's mining animation (File:Mining.gif), times in ms of an 800 ms cycle.
+  // Angles in degrees relative to the ground: hand = shoulder -> hands, handle = hands -> pickaxe head end
+  // (0 = straight ahead, 90 = straight up), bend = forward bend of the body.
+  // "stop" keys start and end at rest (the strike and the held wind-up); the rest flow through smoothly.
   const KEYS = [
-    { t: 0.00, hand: -75, handle: -40, bend: 35 }, // strike: bent over, pickaxe in the rock
-    { t: 0.14, hand: -75, handle: -40, bend: 35 }, // held in the rock
-    { t: 0.24, hand: -50, handle: 0, bend: 10, ease: "io" }, // pulled out, hands at the waist
-    { t: 0.36, hand: -10, handle: 70, bend: 3, ease: "io" }, // rising in front
-    { t: 0.46, hand: 45, handle: 120, bend: 0, ease: "io" }, // hands at head height
-    { t: 0.54, hand: 92, handle: 160, bend: -5, ease: "io" }, // wound up above the head
-    { t: 0.84, hand: 92, handle: 160, bend: -5 }, // held
-    { t: 0.92, hand: 5, handle: 90, bend: 10, ease: "in" }, // arms thrown forward
-    { t: 1.00, hand: -75, handle: -40, bend: 35, ease: "in" }, // back into the strike
+    { t: 0, hand: -66, handle: -49, bend: 42, stop: true }, // strike: bent over, pickaxe in the rock
+    { t: 110, hand: -66, handle: -49, bend: 42, stop: true }, // held in the rock
+    { t: 170, hand: -67, handle: -7, bend: 12 }, // pulled out, handle level
+    { t: 230, hand: -25, handle: 118, bend: 5 }, // pickaxe flips up
+    { t: 290, hand: 2, handle: 131, bend: 2 }, // hands rise in front
+    { t: 340, hand: 45, handle: 137, bend: 0 },
+    { t: 420, hand: 75, handle: 165, bend: -2 },
+    { t: 460, hand: 88, handle: 178, bend: -3, stop: true }, // wound up: arms straight up, pickaxe level behind
+    { t: 720, hand: 88, handle: 178, bend: -3, stop: true }, // held
+    { t: 770, hand: -21, handle: 87, bend: 8 }, // arms thrown forward, handle upright
+    { t: 800, hand: -66, handle: -49, bend: 42, impact: true }, // into the rock
   ];
-  const SWING_MS = 1000;
-  const EASE = {
-    io: (x) => 0.5 - 0.5 * Math.cos(Math.PI * x),
-    in: (x) => x * x,
-    none: () => 0,
-  };
-  function pose(p) {
+  const CYCLE = 800, SWING_MS = 900; // the GIF's timing, played slightly slower
+  const CHANNELS = ["hand", "handle", "bend"];
+  // tangents for cubic Hermite interpolation: zero at stops, carried through at impact, smooth elsewhere
+  KEYS.forEach((k, i) => {
+    k.m = {};
+    for (const ch of CHANNELS) {
+      if (k.stop) k.m[ch] = 0;
+      else if (k.impact) k.m[ch] = (k[ch] - KEYS[i - 1][ch]) / (k.t - KEYS[i - 1].t) * 1.5;
+      else k.m[ch] = (KEYS[i + 1][ch] - KEYS[i - 1][ch]) / (KEYS[i + 1].t - KEYS[i - 1].t);
+    }
+  });
+  function pose(ms) {
     let i = 1;
-    while (i < KEYS.length - 1 && KEYS[i].t <= p) i++;
+    while (i < KEYS.length - 1 && KEYS[i].t <= ms) i++;
     const k0 = KEYS[i - 1], k1 = KEYS[i];
-    const x = EASE[k1.ease || "none"]((p - k0.t) / (k1.t - k0.t));
-    const mix = (key) => k0[key] + (k1[key] - k0[key]) * x;
-    return { hand: mix("hand"), handle: mix("handle"), bend: mix("bend") };
+    const dt = k1.t - k0.t, x = (ms - k0.t) / dt;
+    const h00 = 2 * x ** 3 - 3 * x ** 2 + 1, h10 = x ** 3 - 2 * x ** 2 + x, h01 = -2 * x ** 3 + 3 * x ** 2, h11 = x ** 3 - x ** 2;
+    const out = {};
+    for (const ch of CHANNELS) out[ch] = h00 * k0[ch] + h10 * dt * k0.m[ch] + h01 * k1[ch] + h11 * dt * k1.m[ch];
+    return out;
   }
   function chips() {
     for (let i = 0; i < 3; i++) {
@@ -1042,22 +1078,24 @@ b, strong {
   const DEG = Math.PI / 180;
   const handOffset = GRIP.clone().sub(RIGHT_SHOULDER);
   const grip = new THREE.Vector3();
-  let lastPhase = 0;
+  let lastMs = 0;
   minerRenderer.setAnimationLoop((t) => {
-    const p = still ? 0.6 : (t % SWING_MS) / SWING_MS;
-    const { hand, handle, bend } = pose(p);
-    const arm = (HAND_REST - hand) * DEG; // rotation about the sideways axis; positive tips forward-down
-    const pick = (HANDLE_REST - handle) * DEG;
-    grip.copy(handOffset).applyAxisAngle(X_AXIS, arm).add(RIGHT_SHOULDER).sub(HIP);
-    for (const pivot of torsos) pivot.rotation.x = bend * DEG;
+    const ms = still ? 600 : ((t % SWING_MS) / SWING_MS) * CYCLE;
+    const { hand, handle, bend } = pose(ms);
+    // hand/handle are measured against the ground; the arms ride on the bent chest, so add the bend back
+    const arm = (HAND_REST - hand - bend) * DEG; // rotation about the sideways axis; positive tips forward-down
+    const pick = (HANDLE_REST - handle - bend) * DEG;
+    bendBody(bend * DEG);
+    grip.copy(handOffset).applyAxisAngle(X_AXIS, arm).add(RIGHT_SHOULDER).sub(BEND_PIVOT);
+    for (const upper of uppers) upper.rotation.x = bend * DEG;
     for (const pivot of rightArms) pivot.rotation.x = arm;
     for (const pivot of leftArms) pivot.rotation.set(arm + LEFT_OFFSET, 0, LEFT_INWARD);
     for (const pivot of pickaxes) {
       pivot.position.copy(grip);
       pivot.rotation.x = pick;
     }
-    if (p < lastPhase) chips(); // the cycle starts on the strike
-    lastPhase = p;
+    if (ms < lastMs) chips(); // the cycle starts on the strike
+    lastMs = ms;
     minerRenderer.render(minerScene, minerCamera);
   });
 </script>
