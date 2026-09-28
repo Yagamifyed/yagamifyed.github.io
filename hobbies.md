@@ -159,9 +159,6 @@ b, strong {
   gap: 8px;
   font-size: 0.9em;
 }
-.goal-label img {
-  height: 22px;
-}
 .goal-track {
   position: relative;
   margin: 0 18px;
@@ -456,7 +453,7 @@ b, strong {
       <span class="osrs-lvl osrs-lvl-top">99</span><span class="osrs-slash"></span><span class="osrs-lvl osrs-lvl-bot">99</span>
     </div>
     <div class="osrs-cell" data-skill="mining" title="Mining">
-      <img src="/assets/img/hobbies/skills/mining.png" alt="Mining">
+      <span>Mining</span>
       <span class="osrs-lvl osrs-lvl-top">99</span><span class="osrs-slash"></span><span class="osrs-lvl osrs-lvl-bot">99</span>
     </div>
     <div class="osrs-cell" data-skill="strength" title="Strength">
@@ -548,7 +545,7 @@ b, strong {
 </div>
 <div class="goal">
   <div class="goal-label">
-    <img src="/assets/img/hobbies/skills/mining.png" alt="Mining">
+    <span>Mining</span>
     <span><span id="mining-xp">31,395,445</span> / 200,000,000 XP (<span id="mining-pct">15.7</span>%)</span>
   </div>
   <div class="goal-track">
@@ -921,65 +918,74 @@ b, strong {
   const minerCamera = new THREE.PerspectiveCamera(30, 40 / 52, 0.1, 50);
   minerCamera.position.set(0, 0.98, 4.6);
   minerCamera.lookAt(0, 0.98, 0);
-  const minerPivot = new THREE.Group(); // pivot at the feet so the body leans into each strike
-  minerPivot.position.x = -0.1;
+  const minerPivot = new THREE.Group();
+  minerPivot.position.x = -0.3;
   minerScene.add(minerPivot);
-  // Rig, in model units. The pickaxe is split from the right arm and held by its handle; both arms turn at
-  // the shoulders so the hands stay on the handle while it travels on an arc in front of the body.
-  // The shield on the left side is dropped.
+  // Rig, in model units. The upper body is split at the hips so the miner can bend into the strike; the
+  // pickaxe is split from the right arm and held by its handle, and both arms turn at the shoulders so the
+  // hands stay on it. The shield on the left side is dropped.
   const X_AXIS = new THREE.Vector3(1, 0, 0);
+  const HIP = new THREE.Vector3(0, 82, 0);
   const RIGHT_SHOULDER = new THREE.Vector3(-30, 140, 0);
   const LEFT_SHOULDER = new THREE.Vector3(30, 140, 0);
   const GRIP = new THREE.Vector3(-22, 106, 18); // right hand on the handle in the model's pose
+  const HAND_REST = -62; // direction shoulder -> hand in the model's pose, degrees above forward
+  const HANDLE_REST = 41; // direction grip -> pickaxe head end in the model's pose, degrees above forward
   const LEFT_INWARD = -40 * Math.PI / 180; // bring the left arm across the body to the handle
   const LEFT_OFFSET = -28 * Math.PI / 180; // the left arm hangs lower than the right in the model's pose
   const isPickaxe = (c) => c.x < -4 && c.z > 19 && c.y > 92;
   const isRightArm = (c) => c.x < -21 && c.y > 88 && c.y < 150;
   const isShield = (c) => c.x > 34 && (c.z > 16 || c.z < -16 || c.y < 115);
   const isLeftArm = (c) => c.x > 21 && c.y > 88 && c.y < 150;
-  const rightArms = [], leftArms = [], pickaxes = [];
-  function part(mesh, index, pivotPoint, list) {
+  const torsos = [], rightArms = [], leftArms = [], pickaxes = [];
+  function part(mesh, index, parent, pivotPoint, parentOrigin, list) {
     const geometry = mesh.geometry.clone();
     geometry.setIndex(index);
     const piece = new THREE.Mesh(geometry, mesh.material);
     piece.position.copy(pivotPoint).negate();
     const pivot = new THREE.Group();
-    pivot.position.copy(pivotPoint);
+    pivot.position.copy(pivotPoint).sub(parentOrigin);
     pivot.add(piece);
-    mesh.add(pivot);
+    parent.add(pivot);
     list.push(pivot);
+    return pivot;
   }
+  const ORIGIN = new THREE.Vector3();
   loader.load("/assets/img/hobbies/osrs-character.glb", (gltf) => {
     const body = gltf.scene;
     const meshes = [];
     body.traverse((o) => { if (o.isMesh) meshes.push(o); });
     const a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3();
-    for (const mesh of meshes) {
+    meshes.forEach((mesh, i) => {
       const pos = mesh.geometry.attributes.position;
       const idx = mesh.geometry.index.array;
-      const pickIdx = [], rightIdx = [], leftIdx = [], bodyIdx = [];
+      const pickIdx = [], rightIdx = [], leftIdx = [], torsoIdx = [], legIdx = [];
       for (let t = 0; t < idx.length; t += 3) {
         a.fromBufferAttribute(pos, idx[t]);
         b.fromBufferAttribute(pos, idx[t + 1]);
         c.fromBufferAttribute(pos, idx[t + 2]);
         const centre = a.add(b).add(c).divideScalar(3);
         if (isShield(centre)) continue;
-        const target = isPickaxe(centre) ? pickIdx : isRightArm(centre) ? rightIdx : isLeftArm(centre) ? leftIdx : bodyIdx;
+        const target = isPickaxe(centre) ? pickIdx : isRightArm(centre) ? rightIdx : isLeftArm(centre) ? leftIdx
+          : centre.y > HIP.y ? torsoIdx : legIdx;
         target.push(idx[t], idx[t + 1], idx[t + 2]);
       }
-      part(mesh, rightIdx, RIGHT_SHOULDER, rightArms);
-      part(mesh, leftIdx, LEFT_SHOULDER, leftArms);
-      part(mesh, pickIdx, GRIP, pickaxes);
+      const torso = part(mesh, torsoIdx, mesh, HIP, ORIGIN, torsos);
+      part(mesh, rightIdx, torso, RIGHT_SHOULDER, HIP, rightArms);
+      part(mesh, leftIdx, torso, LEFT_SHOULDER, HIP, leftArms);
+      part(mesh, pickIdx, torso, GRIP, HIP, pickaxes);
       mesh.geometry = mesh.geometry.clone();
-      mesh.geometry.setIndex(bodyIdx);
-    }
-    // Headless head: the model's neck stump is too small to survive pixelation, so draw a bolder one.
-    const stump = new THREE.Mesh(new THREE.CylinderGeometry(11, 12, 10, 8), new THREE.MeshBasicMaterial({ color: 0xa3201a }));
-    stump.position.set(0, 167, 3);
-    const wound = new THREE.Mesh(new THREE.CylinderGeometry(8, 8, 2, 8), new THREE.MeshBasicMaterial({ color: 0xf0782a }));
-    wound.position.y = 5.5;
-    stump.add(wound);
-    meshes[0].add(stump);
+      mesh.geometry.setIndex(legIdx);
+      if (i === 0) {
+        // Headless head: the model's neck stump is too small to survive pixelation, so draw a bolder one.
+        const stump = new THREE.Mesh(new THREE.CylinderGeometry(11, 12, 10, 8), new THREE.MeshBasicMaterial({ color: 0xa3201a }));
+        stump.position.set(0, 167, 3).sub(HIP);
+        const wound = new THREE.Mesh(new THREE.CylinderGeometry(8, 8, 2, 8), new THREE.MeshBasicMaterial({ color: 0xf0782a }));
+        wound.position.y = 5.5;
+        stump.add(wound);
+        torso.add(stump);
+      }
+    });
     const box = new THREE.Box3().setFromObject(body);
     const center = box.getCenter(new THREE.Vector3());
     body.position.set(-center.x, -box.min.y, -center.z);
@@ -989,29 +995,42 @@ b, strong {
     minerPivot.add(facing);
   });
 
-  // Two poses, as rotations about the sideways axis (negative lifts the front upwards):
-  //   arm  - shoulder rotation; at the strike the hands are in front at chest height, wound up they are above the head
-  //   pick - pickaxe rotation about the grip; the handle points forward-down at the strike and up over the head when wound up
-  const DEG = Math.PI / 180;
-  const STRIKE_POSE = { arm: -42 * DEG, pick: 61 * DEG, lean: 0.12 };
-  const WIND_POSE = { arm: -130 * DEG, pick: -62 * DEG, lean: -0.04 };
-  const SWING_MS = 1600;
-  const easeInOut = (x) => 0.5 - 0.5 * Math.cos(Math.PI * x);
-  const easeIn = (x) => x * x * x;
-  const STRIKE_START = 0.55, STRIKE = 0.7; // phases where the downswing begins and the pickaxe hits
-  // 0 = strike pose, 1 = wound up
-  function windUp(p) {
-    if (p < STRIKE_START) return easeInOut(p / STRIKE_START);
-    if (p < STRIKE) return 1 - easeIn((p - STRIKE_START) / (STRIKE - STRIKE_START));
-    const q = (p - STRIKE) / (1 - STRIKE);
-    return 0.05 * Math.sin(Math.PI * q) * (1 - q); // small recoil off the rock
+  // Keyframes traced from the OSRS wiki's mining animation. Angles in degrees:
+  //   hand   - direction shoulder -> hands, above forward (in the torso's frame)
+  //   handle - direction hands -> pickaxe head end, above forward (in the torso's frame)
+  //   bend   - forward bend at the hips
+  // ease: "io" for ordinary moves, "in" to accelerate into the strike.
+  const KEYS = [
+    { t: 0.00, hand: -75, handle: -40, bend: 35 }, // strike: bent over, pickaxe in the rock
+    { t: 0.14, hand: -75, handle: -40, bend: 35 }, // held in the rock
+    { t: 0.24, hand: -50, handle: 0, bend: 10, ease: "io" }, // pulled out, hands at the waist
+    { t: 0.36, hand: -10, handle: 70, bend: 3, ease: "io" }, // rising in front
+    { t: 0.46, hand: 45, handle: 120, bend: 0, ease: "io" }, // hands at head height
+    { t: 0.54, hand: 92, handle: 160, bend: -5, ease: "io" }, // wound up above the head
+    { t: 0.84, hand: 92, handle: 160, bend: -5 }, // held
+    { t: 0.92, hand: 5, handle: 90, bend: 10, ease: "in" }, // arms thrown forward
+    { t: 1.00, hand: -75, handle: -40, bend: 35, ease: "in" }, // back into the strike
+  ];
+  const SWING_MS = 1000;
+  const EASE = {
+    io: (x) => 0.5 - 0.5 * Math.cos(Math.PI * x),
+    in: (x) => x * x,
+    none: () => 0,
+  };
+  function pose(p) {
+    let i = 1;
+    while (i < KEYS.length - 1 && KEYS[i].t <= p) i++;
+    const k0 = KEYS[i - 1], k1 = KEYS[i];
+    const x = EASE[k1.ease || "none"]((p - k0.t) / (k1.t - k0.t));
+    const mix = (key) => k0[key] + (k1[key] - k0[key]) * x;
+    return { hand: mix("hand"), handle: mix("handle"), bend: mix("bend") };
   }
   function chips() {
     for (let i = 0; i < 3; i++) {
       const chip = document.createElement("span");
       chip.className = "goal-chip";
-      chip.style.left = "62px";
-      chip.style.top = "72px";
+      chip.style.left = "66px";
+      chip.style.top = "88px";
       chip.style.setProperty("--dx", 2 + Math.random() * 10 + "px");
       chip.style.setProperty("--dy", -6 - Math.random() * 14 + "px");
       miner.appendChild(chip);
@@ -1020,24 +1039,24 @@ b, strong {
   }
 
   const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const DEG = Math.PI / 180;
   const handOffset = GRIP.clone().sub(RIGHT_SHOULDER);
   const grip = new THREE.Vector3();
   let lastPhase = 0;
   minerRenderer.setAnimationLoop((t) => {
-    const p = still ? 0 : (t % SWING_MS) / SWING_MS;
-    const u = windUp(p);
-    // the pickaxe lags slightly behind the arms on the way down, which reads as a whip into the rock
-    const arm = STRIKE_POSE.arm + (WIND_POSE.arm - STRIKE_POSE.arm) * u;
-    const pick = STRIKE_POSE.pick + (WIND_POSE.pick - STRIKE_POSE.pick) * Math.pow(u, 0.8);
-    grip.copy(handOffset).applyAxisAngle(X_AXIS, arm).add(RIGHT_SHOULDER);
+    const p = still ? 0.6 : (t % SWING_MS) / SWING_MS;
+    const { hand, handle, bend } = pose(p);
+    const arm = (HAND_REST - hand) * DEG; // rotation about the sideways axis; positive tips forward-down
+    const pick = (HANDLE_REST - handle) * DEG;
+    grip.copy(handOffset).applyAxisAngle(X_AXIS, arm).add(RIGHT_SHOULDER).sub(HIP);
+    for (const pivot of torsos) pivot.rotation.x = bend * DEG;
     for (const pivot of rightArms) pivot.rotation.x = arm;
     for (const pivot of leftArms) pivot.rotation.set(arm + LEFT_OFFSET, 0, LEFT_INWARD);
     for (const pivot of pickaxes) {
       pivot.position.copy(grip);
       pivot.rotation.x = pick;
     }
-    minerPivot.rotation.z = -(STRIKE_POSE.lean + (WIND_POSE.lean - STRIKE_POSE.lean) * u);
-    if (lastPhase < STRIKE && p >= STRIKE) chips();
+    if (p < lastPhase) chips(); // the cycle starts on the strike
     lastPhase = p;
     minerRenderer.render(minerScene, minerCamera);
   });
