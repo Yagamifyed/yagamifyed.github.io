@@ -416,8 +416,8 @@ b, strong {
   }
   .osrs-slash {
     left: 70%;
-    top: -6px;
-    height: 74px;
+    top: 6px; /* centred in the 62px cell */
+    height: 46px;
     transform: rotate(35deg);
   }
   .osrs-total {
