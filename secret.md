@@ -381,9 +381,9 @@ b, strong {
 .osrs-slash {
   position: absolute;
   left: 71%;
-  top: -8px;
+  top: 5px; /* centred in the 54px cell (inside its 2px borders) */
   width: 2px;
-  height: 70px;
+  height: 40px;
   background: #000;
   transform: rotate(40deg);
 }
