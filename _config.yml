@@ -3,10 +3,13 @@
 
 title: Levin Güver
 description: >- # this means to ignore newlines until "baseurl:"
-  Hi there, and welcome to my website! :-)
+  Postdoctoral researcher at the University of Zurich working on the
+  philosophical foundations of criminal law, action theory, and
+  experimental jurisprudence.
 baseurl: "" # the subpath of the site
 url: "https://levinguever.com" # the base hostname & protocol for the site
-og_image: /assets/img/profile-pic_empty.png
+og_image: /assets/img/social-card.jpg
+og_image_alt: Levin Güver – Postdoctoral Researcher, University of Zurich
 google_analytics: "UA-121636368-3"
 remote_theme: eliottvincent/bay
 
