@@ -4,7 +4,7 @@
 title: Levin Güver
 description: >- # this means to ignore newlines until "baseurl:"
   Postdoctoral researcher at the University of Zurich working on
-  criminal law, moral philosophy, and cognitive psychology.
+  criminal law, moral philosophy, cognitive psychology, and AI.
 baseurl: "" # the subpath of the site
 url: "https://levinguever.com" # the base hostname & protocol for the site
 og_image: /assets/img/social-card.jpg
