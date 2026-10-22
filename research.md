@@ -14,8 +14,8 @@ h3 {
 }
 
 b, strong {
-  font-weight: inherit;
-  text-decoration: underline;
+  font-weight: 600;
+  text-decoration: none;
 }
 
 </style>
