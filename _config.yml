@@ -7,7 +7,7 @@ description: >- # this means to ignore newlines until "baseurl:"
   criminal law, moral philosophy, cognitive psychology, and AI.
 baseurl: "" # the subpath of the site
 url: "https://levinguever.com" # the base hostname & protocol for the site
-og_image: /assets/img/social-card.png
+og_image: /assets/img/social-card-2.png
 og_image_alt: Pixel-art portrait of Levin Güver on a stitched parchment card – Levin Güver, PhD, University of Zurich
 google_analytics: "UA-121636368-3"
 remote_theme: eliottvincent/bay
